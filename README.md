@@ -1,20 +1,20 @@
-Home Assistant is an open source home automation platform based on Python 3.5. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
+Home Assistant is an open-source home automation platform written in Python. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
 
 [Documentation](https://home-assistant.io/docs/)  
 [Installation options](https://home-assistant.io/docs/installation/)  
-[Components](https://home-assistant.io/components/)
+[Components](https://home-assistant.io/components/)  
+[Demo](https://home-assistant.io/demo/)
 
 #### HA advantages:
 
-* Speed of development
-* Number of integrations
-* Run on Raspberry Pi, Synology NAS, or any computer running python
-* Openness
-* Not generally dependent on cloud services (depends on component)
+* Speed of development, updates generally released bi-weekly
+* Number of integrations approaching 1,000
+* Runs on Raspberry Pi, Synology NAS, or any computer running python
+* Not dependent on cloud services (most components), all data stored locally in sqllite DB
 * Ability to use almost any hardware, [regardless of vendor support](https://news.ycombinator.com/item?id=15989302)
+* Can work in conjunction with hubs from other manufacturers
 * Helpful community, active Discord channel and forum
-* Updates released bi-weekly
-* Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/) or easily accessible through [mobile web interface](https://home-assistant.io/docs/frontend/mobile/)
+* Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through [mobile web interface](https://home-assistant.io/docs/frontend/mobile/)
 
 #### Competitors:
 
@@ -29,30 +29,30 @@ Home Assistant is an open source home automation platform based on Python 3.5. W
 ## Home Automation Protocols
 
 #### Z-Wave
-mesh networking with master-slave
-Range up to 100m, 200m when meshed
-        Adding more devices helps with communication
-Aeotec Gen-5 stick
-Supports AES encryption
-Assigned Node IDs
-Enhanced z-wave? Requires network key?
-Has interoperability layer to ensure all Z-Wave hardware and software work together
-low-latency transmission
-up to 100 kbit/s
-Nodes can be up to 30m apart, transmissions can hop nodes up to 4 times (adds delay)
-Operates on 908MHz band, no interference from 2.4GHz (ISM) devices
-Up to 232 devices
+mesh networking with master-slave model  
+Range up to 100m, 200m when meshed  
+Adding more devices helps with communication  
+Aeotec Gen-5 stick  
+Supports AES encryption  
+Assigned Node IDs  
+z-wave plus difference? Requires network key?  
+Has interoperability layer to ensure all Z-Wave hardware and software work together  
+low-latency transmission  
+up to 100 kbit/s  
+Nodes can be up to 30m apart, transmissions can hop nodes up to 4 times (adds delay)  
+Operates on 908MHz band, no interference from 2.4GHz (ISM) devices  
+Up to 232 devices  
 
 ### Zigbee 
-requires hub - zigbee protocol not as standard
-mesh networking
-low-power, low-bandwidth (max 250 kbit/s)
-indoor - 10 to 20m range
-operates at 3.4 GHz
-cheaper than Z-Wave
+requires hub - zigbee protocol not as standard  
+mesh networking  
+low-power, low-bandwidth (max 250 kbit/s)  
+indoor - 10 to 20m range  
+operates at 3.4 GHz   
+cheaper than Z-Wave  
 
 #### 433MHz or 315MHz RF 
-(good for transmitting one way - doorbells, fans, weather stations)  
+good for transmitting one way - doorbells, fans, weather stations  
 Sonoff switches
 
 #### Wifi devices
@@ -78,7 +78,7 @@ HomeAssistant running in a Docker container on ResinOS
 * Simpler built-in updater
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_update.png" width="500">
 * Integrated app store for simple add-on installation
-* Ability to integrate [third-party repository](https://home-assistant.io/hassio/installing_third_party_addons/) for additional add-ons
+* Ability to integrate [community add-ons](https://github.com/hassio-addons) (web terminal, homebridge, pi-hole) and [third-party repositories](https://home-assistant.io/hassio/installing_third_party_addons/)
 
 ## Home Assistant Basics
 
@@ -139,9 +139,6 @@ Yaml config vs [GUI](https://home-assistant.io/docs/ecosystem/hass-configurator/
 
 
 
-Sonoff & Tasmota (or ESPurna) firmware (Sonoff available in RF or Wifi version. Tasmota adds MQTT support)
-    These third-party firmwares also add OTA updates
-Yeelight and Xiaome
 
 ## Advanced Config
 [Templating](https://home-assistant.io/docs/configuration/templating/)  
@@ -164,9 +161,19 @@ Advanced configuration through Node Red
 [Part 3](http://diyfuturism.com/index.php/2018/01/18/going-further-with-home-automations-in-node-red/)
 
 ## Recommendations for starting out
+Hass.io running on a Raspberry Pi 3 - $50 with power and case  
+To proceed with z-wave: 
+[Aeotec Z-Stick Gen5](https://www.amazon.com/Aeotec-Z-Stick-Z-Wave-create-gateway/dp/B00X0AWA6E/) - $45
+
 
 Lights:
     Cheaper: Yeelight or IKEA Tradifi
-    More: Hue or Osram
+    More: Hue or Osram  
+    
+[Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) - $60 includes zigbee hub, two door/window sensors, and a push button
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="300">
 
-Sonoff and [Tatsmota](https://github.com/arendst/Sonoff-Tasmota)
+
+Sonoff and [Tatsmota](https://github.com/arendst/Sonoff-Tasmota)  
+Sonoff & Tasmota (or ESPurna) firmware (Sonoff available in RF or Wifi version. Tasmota adds MQTT support)
+These third-party firmwares also add OTA updates
