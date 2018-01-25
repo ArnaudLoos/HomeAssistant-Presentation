@@ -76,7 +76,7 @@ Install HomeAssistant core on a full Debian OS. No add-on packages available nat
 HomeAssistant running in a Docker container on ResinOS  
 
 * Simpler built-in updater
-![HA Update](./images/HA_update.png)
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_update.png" width="500">
 * Integrated app store for simple add-on installation
 * Ability to integrate [third-party repository](https://home-assistant.io/hassio/installing_third_party_addons/) for additional add-ons
 
