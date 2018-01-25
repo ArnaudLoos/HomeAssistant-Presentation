@@ -4,7 +4,7 @@ Home Assistant is an open source home automation platform based on Python 3.5. W
 [Installation options](https://home-assistant.io/docs/installation/)  
 [Components](https://home-assistant.io/components/)
 
-####HA advantages:
+#### HA advantages:
 
 * Speed of development
 * Number of integrations
@@ -16,7 +16,7 @@ Home Assistant is an open source home automation platform based on Python 3.5. W
 * Updates released bi-weekly
 * Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/) or easily accessible through [mobile web interface](https://home-assistant.io/docs/frontend/mobile/)
 
-####Competitors:
+#### Competitors:
 
 * Samsung Smartthings
 * Wink 2
@@ -26,9 +26,9 @@ Home Assistant is an open source home automation platform based on Python 3.5. W
 * Others: Logitech, Lowe's Iris, Blink, High-end systems, Security companies like ADT and Guardian
 * OpenSource: OpenHAB
 
-##Home Automation Protocols
+## Home Automation Protocols
 
-####Z-Wave
+#### Z-Wave
 mesh networking with master-slave
 Range up to 100m, 200m when meshed
         Adding more devices helps with communication
@@ -43,7 +43,7 @@ Nodes can be up to 30m apart, transmissions can hop nodes up to 4 times (adds de
 Operates on 908MHz band, no interference from 2.4GHz (ISM) devices
 Up to 232 devices
 
-###Zigbee 
+### Zigbee 
 requires hub - zigbee protocol not as standard
 mesh networking
 low-power, low-bandwidth (max 250 kbit/s)
@@ -51,25 +51,28 @@ indoor - 10 to 20m range
 operates at 3.4 GHz
 cheaper than Z-Wave
 
-####433MHz or 315MHz RF 
-(good for transmitting one way - doorbells, fans, weather stations)
+#### 433MHz or 315MHz RF 
+(good for transmitting one way - doorbells, fans, weather stations)  
+Sonoff switches
 
-####Wifi devices
+#### Wifi devices
 consume a lot of power
 
-####IR devices
+#### IR devices
+Can control anything that accepts a signal from a remote (tv, amplifier, etc)  
+[Broadlink RM mini3](http://www.ibroadlink.com/rmMini3/)
 
-####Bluetooth
+#### Bluetooth
 Up to 10m signal generally
 
 
-##[Installation](https://home-assistant.io/docs/installation/)
+## [Installation](https://home-assistant.io/docs/installation/)
 
-###[Hassbian](https://home-assistant.io/docs/installation/hassbian/)
+### [Hassbian](https://home-assistant.io/docs/installation/hassbian/)
 Install HomeAssistant core on a full Debian OS. No add-on packages available natively, packages like DuckDNS and Mosquitto MQTT
 
 
-###[Hass.io](https://home-assistant.io/hassio/)
+### [Hass.io](https://home-assistant.io/hassio/)
 HomeAssistant running in a Docker container on ResinOS  
 
 * Simpler built-in updater
@@ -77,16 +80,16 @@ HomeAssistant running in a Docker container on ResinOS
 * Integrated app store for simple add-on installation
 * Ability to integrate [third-party repository](https://home-assistant.io/hassio/installing_third_party_addons/) for additional add-ons
 
-##Home Assistant Basics
+## Home Assistant Basics
 
 Arbitrary switches  
 Alarm enabled and Vacation Mode
 
 
-##[Add-ons](https://home-assistant.io/addons/)
+## [Add-ons](https://home-assistant.io/addons/)
 
 
-###SSH, Samba, Git
+### SSH, Samba, Git
 Add-ons for updating configurations
 
 
@@ -96,10 +99,10 @@ Add-ons for updating configurations
   * [hassio](https://home-assistant.io/docs/tools/hass/)
   * Can also control through GUI
 
-###Let's Encrypt
+### Let's Encrypt
 Easily and automatically add a free SSL certificate
 
-###Mosquitto
+### Mosquitto
 Enables a local MQTT broker  
 [MQTT](https://home-assistant.io/components/mqtt/) is a machine-to-machine or “Internet of Things” connectivity protocol on top of TCP/IP. It allows extremely lightweight publish/subscribe messaging transport.  
 Network devices can either publish simple information to an MQTT topic or subscribe to a topic to consume the data published there by another device.  
@@ -117,16 +120,16 @@ Then, after I define the MQTT component in my configuration, I define a sensor t
 ```
 And now inside Home Assistant I have a component named `sensor.bedroom_temp` with the value being fed in directly from the sensor with MQTT as the middle man.
 
-###[TOR](https://home-assistant.io/docs/ecosystem/tor/)
+### [TOR](https://home-assistant.io/docs/ecosystem/tor/)
 The ability to access your frontend through an onion address on the TOR network. With this enabled, you do not need to open your firewall ports or setup HTTPS to enable secure remote access.
 
 
 
-##Examples
+## Examples
 Automation and config examples
 
 
-##Openness and ability to extend
+## Openness and ability to extend
 
 ESP8266, Arduino based devices
 
@@ -140,7 +143,7 @@ Sonoff & Tasmota (or ESPurna) firmware (Sonoff available in RF or Wifi version. 
     These third-party firmwares also add OTA updates
 Yeelight and Xiaome
 
-##Advanced Config
+## Advanced Config
 [Templating](https://home-assistant.io/docs/configuration/templating/)  
 Alternate supported Databases  
 Grafana and InfluxDB  
@@ -160,9 +163,10 @@ Advanced configuration through Node Red
 [Part 2](http://diyfuturism.com/index.php/2017/12/14/basic-node-red-flows-for-automating-lighting-with-home-assistant/)
 [Part 3](http://diyfuturism.com/index.php/2018/01/18/going-further-with-home-automations-in-node-red/)
 
-##Recommendations for starting out
+## Recommendations for starting out
 
 Lights:
     Cheaper: Yeelight or IKEA Tradifi
     More: Hue or Osram
 
+Sonoff and [Tatsmota](https://github.com/arendst/Sonoff-Tasmota)
