@@ -81,6 +81,38 @@ HomeAssistant running in a Docker container on ResinOS
 * Ability to integrate [community add-ons](https://github.com/hassio-addons) (web terminal, homebridge, pi-hole) and [third-party repositories](https://home-assistant.io/hassio/installing_third_party_addons/)
 
 ## Home Assistant Basics
+Home Assistant organizes all the components that comprise your home automation network. This includes information pulled from the Internet (weather forecast, traffic cam image, bitcoin price), the state of a switch or light (on/off), presence detection (home/away), and more.  
+Each of these items is an entity with a state value and can be seen on the States page in Developer Tools in its raw form  
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state1.png" width="500">  
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state2.png" width="500">  
+and displayed on the frontend for easy viewing   
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state_card.png" width="500">
+
+All of the configuration of Home Assistant is done through simple text files written in [YAML](https://home-assistant.io/docs/configuration/yaml/)  
+
+Additional sensors can be added by defining the component in your configuration.yaml file. The bitcoin sensor shown above was added with the following:
+
+ 
+```yaml
+sensor:
+  - platform: bitcoin
+    display_options:
+      - exchangerate
+      - trade_volume_btc
+```
+
+Adding a switch component like a power plug or light will automatically cause an entity with a toggle switch to be defined in the frontend allowing you to turn the switch on or off manually.
+
+The power of home automation however comes from the automations!  
+
+Automations in Home Assistant are defined as trigger, condition, action  
+
+```
+(trigger)    When Paulus arrives home
+(condition)  and it is after sunset:
+(action)     Turn the lights in the living room on
+```
+with trigger and action being mandatory and condition being optional
 
 Arbitrary switches  
 Alarm enabled and Vacation Mode
@@ -174,6 +206,5 @@ Lights:
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="300">
 
 
-Sonoff and [Tatsmota](https://github.com/arendst/Sonoff-Tasmota)  
-Sonoff & Tasmota (or ESPurna) firmware (Sonoff available in RF or Wifi version. Tasmota adds MQTT support)
-These third-party firmwares also add OTA updates
+[Sonoff](https://www.itead.cc/sonoff-wifi-wireless-switch.html) with [Tasmota](https://github.com/arendst/Sonoff-Tasmota) or [ESPurna](https://bitbucket.org/xoseperez/espurna) third-party firmware (Sonoff available in RF or Wifi version)  
+Tasmota adds MQTT support and OTA updates
