@@ -68,9 +68,12 @@ Up to 10m signal generally
 
 ## [Installation](https://home-assistant.io/docs/installation/)
 
-### [Hassbian](https://home-assistant.io/docs/installation/hassbian/)
-Install HomeAssistant core on a full Debian OS. No add-on packages available natively, packages like DuckDNS and Mosquitto MQTT
+Installation of Home Assistant on a Raspberry Pi is accomplished by flashing the Micro SD card with a downloaded image.
 
+After initial boot an installer will download the latest HA build and run in the background. It takes around 15 minutes to complete, and afterwards the Home Assistant interface will be available at ```http://<RasPI IP>:8123```.
+
+### [Hassbian](https://home-assistant.io/docs/installation/hassbian/)
+Install HomeAssistant core on a full Debian OS. No add-on packages available natively, packages like DuckDNS and Mosquitto MQTT must be installed manually afterwards.
 
 ### [Hass.io](https://home-assistant.io/hassio/)
 HomeAssistant running in a Docker container on ResinOS  
@@ -82,40 +85,154 @@ HomeAssistant running in a Docker container on ResinOS
 
 ## Home Assistant Basics
 Home Assistant organizes all the components that comprise your home automation network. This includes information pulled from the Internet (weather forecast, traffic cam image, bitcoin price), the state of a switch or light (on/off), presence detection (home/away), and more.  
-Each of these items is an entity with a state value and can be seen on the States page in Developer Tools in its raw form  
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state1.png" width="500">  
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state2.png" width="500">  
-and displayed on the frontend for easy viewing   
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state_card.png" width="500">
 
-All of the configuration of Home Assistant is done through simple text files written in [YAML](https://home-assistant.io/docs/configuration/yaml/)  
+For each component that you want to use in Home Assistant, you add code in your ```configuration.yaml``` file to specify its settings.
 
-Additional sensors can be added by defining the component in your configuration.yaml file. The bitcoin sensor shown above was added with the following:
+[YAML](https://home-assistant.io/docs/configuration/yaml/) is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it may be due to incorrect indentation.
+
+
+```yaml
+homeassistant:
+  name: Burgh
+  unit_system: imperial
+  time_zone: America/New_York
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: 330
+
+light:
+  - platform: osramlightify
+    host: 192.168.1.5
+
+sensor:
+  - platform: darksky
+    api_key: !secret darksky_api
+    units: auto
+    monitored_conditions:
+      - summary
+      - temperature
+      - temperature_max
+      - temperature_min
+      - precip_type
+      - precip_probability
+```
+
+Each of these items is an entity with a state value and can be seen on the States page in Developer Tools in its raw form,  
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state_darksky.png" width="500">  
+
+and displayed on the frontend for easy viewing.   
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_weather.png" width="300">
+
+
+
+Additional sensors can be added by defining the component in your configuration.yaml file. The bitcoin price sensor can be added with the following:
 
  
 ```yaml
 sensor:
   - platform: bitcoin
     display_options:
-      - exchangerate
-      - trade_volume_btc
+      - market_price_usd
 ```
 
 Adding a switch component like a power plug or light will automatically cause an entity with a toggle switch to be defined in the frontend allowing you to turn the switch on or off manually.
 
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_lights.png" width="300">
+
 The power of home automation however comes from the automations!  
 
-Automations in Home Assistant are defined as trigger, condition, action  
+Automations in Home Assistant are defined as trigger, condition, action.  
 
 ```
-(trigger)    When Paulus arrives home
+(trigger)    When I arrive home
 (condition)  and it is after sunset:
 (action)     Turn the lights in the living room on
 ```
-with trigger and action being mandatory and condition being optional
+With trigger and action being mandatory and condition being optional.
 
-Arbitrary switches  
-Alarm enabled and Vacation Mode
+An automation to turn on a porch light at sunset.  
+
+```yaml
+- id: '0001'
+  alias: 'Outside light ON at sunset'
+  hide_entity: true
+  trigger:
+  - platform: state
+    entity_id: sun.sun
+    from: above_horizon
+    to: below_horizon
+  action:
+  - service: light.turn_on
+    entity_id: light.front_door
+```
+Send me a text message (using the twilio component) if the water detector by my hot water tank registers water.
+
+```
+- id: '1102'
+  alias: 'Notify of water heater leak'
+  hide_entity: true
+  trigger:
+    - platform: state
+      entity_id: sensor.everspring_st812_flood_detector_flood
+      from: '0'
+      to: '255'
+  action:
+    service: notify.twilio
+    data:
+      message: 'Water detected by water heater!'
+      target:
+        - +1412xxxxxxx
+```
+My security alarm. If my hall motion detector registers motion, and nobody is home, and I have security enabled, then send me a text.
+
+```
+- id: '1103'
+  alias: 'Security - Motion detected'
+  hide_entity: true
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.ecolink_motion_sensor_sensor
+      from: 'off'
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: group.all_devices
+      state: 'not_home'
+    - condition: state
+      entity_id: input_boolean.enable_security
+      state: 'on'
+  action:
+    service: notify.twilio
+    data:
+      message: 'Movement detected at home!'
+      target:
+        - +14122943661
+```
+
+In the above example I check the state of an ```input_boolean``` named ```enable_security``` and only execute the action if it is set to ```ON```
+
+This is a toggle switch on the frontend that I can manually set, or set through a different automation.
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_switches.png" width="300">
+
+How do I get this toggle switch? I create it.
+
+```yaml
+enable_security:
+  name: Alarm Enabled
+  icon: mdi:shield-outline
+  initial: on
+```
+
+
+
+
+Scripts vs Scenes  
+Grouping devices  
+Customizing entities, MDI icons  
+
 
 
 ## [Add-ons](https://home-assistant.io/addons/)
@@ -158,24 +275,135 @@ The ability to access your frontend through an onion address on the TOR network.
 
 
 ## Examples
-Automation and config examples
 
+Additional security automations
+
+```
+- id: '2076'
+  alias: 'Security - Sliding Door opened while in bed'
+  hide_entity: true
+  trigger:
+    - platform: state
+      entity_id: sensor.ecolink_binary
+      from: 'Closed'
+      to: 'Open'
+  condition:
+    - condition: state
+      entity_id: input_boolean.in_bed
+      state: 'on'
+    - condition: state
+      entity_id: input_boolean.enable_security
+      state: 'on'
+  action:
+    service: script.turn_on
+    entity_id: script.sound_the_alarm
+```
+
+Script to sound the alarm.  
+
+```sound_the_alarm:
+  alias: Alarm Activated
+  sequence:
+    - service: light.turn_on
+      entity_id: group.inside_lights
+      # activate a scene that sets all brightness to 255
+      # flash lights red
+    - service: notify.twilio
+      data:
+        message: "Alarm activated!! Someone's in the house!!"
+        target:
+          - +14122943661
+    - service: tts.google_say
+      entity_id: media_player.chromecast1
+      data:
+        message: "Alarm  alarm  alarm  alarm  alarm  alarm"
+```
+
+[Dasher](https://github.com/maddox/dasher) is a simple way to bridge your Amazon Dash buttons to HTTP services.
+
+It is a Node application that listens on the network for Amazon Dash button pushes and sends a post command to the home-assistant REST API.
+
+
+Dasher example with scripting and scenes
+
+```
+- id: '1201'
+  alias: 'Bedroom Dash Button - Good Morning'
+  hide_entity: true
+  trigger:
+    - platform: state
+      entity_id: input_boolean.dash_bedroom
+      from: 'off'
+      to: 'on'
+  condition:
+    - condition: time
+      after: '05:00:00'
+      before: '12:00:00'
+  action:
+    service: script.turn_on
+    entity_id: script.good_morning
+
+- id: '1202'
+  alias: 'Bedroom Dash Button - Good Night'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: input_boolean.dash_bedroom
+      from: 'off'
+      to: 'on'
+  condition:
+    - condition: time
+      after: '17:00:00'
+      before: '04:00:00'
+  action:
+    service: script.turn_on
+    entity_id: script.good_night
+```
+
+Script good morning:
+
+```
+good_morning:
+  alias: "Trigger Morning routine"
+  sequence:
+    - service: scene.turn_on
+      entity_id: scene.good_morning
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.dash_bedroom
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.in_bed
+```
+
+Scene good morning:
+
+```
+- name: Good Morning
+  entities:
+    light.bedroom:
+      state: on
+      brightness_pct: 70
+      color_temp: 400
+      transition: 30
+    light.living_room:
+      state: on
+    light.halllower:
+      state: on
+```
 
 ## Openness and ability to extend
 
-ESP8266, Arduino based devices
-
-Yaml config vs [GUI](https://home-assistant.io/docs/ecosystem/hass-configurator/)  
-
-
+ESP8266, Arduino based devices  
+LaRa WAN  
+Home Assistant for agriculture
 
 
 
 
 ## Advanced Config
-[Templating](https://home-assistant.io/docs/configuration/templating/)  
+[Templating](https://home-assistant.io/docs/configuration/templating/) - use 'Speak Temp' automation.  
 Alternate supported Databases  
 Grafana and InfluxDB  
+Themes.  
 
 [AppDaemon](https://home-assistant.io/docs/ecosystem/appdaemon/)  
 commute script
@@ -194,8 +422,10 @@ Advanced configuration through Node Red
 
 ## Recommendations for starting out
 Hass.io running on a Raspberry Pi 3 - $50 with power and case  
+
 To proceed with z-wave: 
-[Aeotec Z-Stick Gen5](https://www.amazon.com/Aeotec-Z-Stick-Z-Wave-create-gateway/dp/B00X0AWA6E/) - $45
+[Aeotec Z-Stick Gen5](https://www.amazon.com/Aeotec-Z-Stick-Z-Wave-create-gateway/dp/B00X0AWA6E/) - $45  
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/aeotec.jpg" width="200">
 
 
 Lights:
@@ -203,8 +433,11 @@ Lights:
     More: Hue or Osram  
     
 [Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) - $60 includes zigbee hub, two door/window sensors, and a push button
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="300">
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="200">
 
 
-[Sonoff](https://www.itead.cc/sonoff-wifi-wireless-switch.html) with [Tasmota](https://github.com/arendst/Sonoff-Tasmota) or [ESPurna](https://bitbucket.org/xoseperez/espurna) third-party firmware (Sonoff available in RF or Wifi version)  
+[Sonoff](https://www.itead.cc/sonoff-wifi-wireless-switch.html)  
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/sonoff.jpg" width="200">
+
+ [Tasmota](https://github.com/arendst/Sonoff-Tasmota) or [ESPurna](https://bitbucket.org/xoseperez/espurna) third-party firmware (Sonoff available in RF or Wifi version)  
 Tasmota adds MQTT support and OTA updates
