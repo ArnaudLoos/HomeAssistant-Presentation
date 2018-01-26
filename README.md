@@ -28,7 +28,7 @@ Home Assistant is an open-source home automation platform written in Python. Whe
 
 ## Home Automation Protocols
 
-#### Z-Wave
+#### [Z-Wave](https://home-assistant.io/docs/z-wave/installation/)
 mesh networking with master-slave model  
 Range up to 100m, 200m when meshed  
 Adding more devices helps with communication  
@@ -117,7 +117,7 @@ sensor:
       - precip_probability
 ```
 
-Each of these items is an entity with a state value and can be seen on the States page in Developer Tools in its raw form,  
+Each of these items is an entity with a state value and can be seen on the States page in [Developer Tools](https://home-assistant.io/docs/tools/dev-tools/) in its raw form,  
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state_darksky.png" width="500">  
 
@@ -152,7 +152,9 @@ Automations in Home Assistant are defined as trigger, condition, action.
 ```
 With trigger and action being mandatory and condition being optional.
 
-An automation to turn on a porch light at sunset.  
+A trigger will look at events happening in the system while a condition only looks at how the system looks right now. A trigger can observe that a switch is being turned on. A condition can only see if a switch is currently on or off.
+
+An example automation to turn on a porch light at sunset.  
 
 ```yaml
 - id: '0001'
@@ -226,14 +228,118 @@ enable_security:
   initial: on
 ```
 
+###Scripts and Scenes
+
+If the action you wish your automation to perform is simple, like turning on a light, then you can call the service ```light.turn_on``` directly and pass the ```entity_id```. If however you wish to trigger a more complex action then it may be necessary for your action to call ```script.turn_on``` or ```scene.turn_on``` with the ```entity_id``` being the name of the script or scene to execute.
+
+[Scripts](https://home-assistant.io/docs/scripts/) are a sequence of actions that Home Assistant will execute. [Scenes](https://home-assistant.io/components/scene/) capture the states you want certain entities to be.
+
+```yaml
+script:
+  example_script:
+    sequence:
+      - service: light.turn_on
+        entity_id: light.ceiling
+      - service: notify.notify
+        data:
+          message: 'Turned on the ceiling light!'
+```
+
+```yaml
+scene:
+  - name: Romantic
+    entities:
+      light.tv_back_light: on
+      light.ceiling:
+        state: on
+        xy_color: [0.33, 0.66]
+        brightness: 200
+  - name: Movies
+    entities:
+      light.tv_back_light:
+        state: on
+        brightness: 100
+      light.ceiling: off
+      media_player.sony_bravia_tv:
+        source: HDMI 1
+```
 
 
 
-Scripts vs Scenes  
-Grouping devices  
+[Splitting up the configuration](https://home-assistant.io/docs/configuration/splitting_configuration/)
+
+```
+group: !include groups.yaml
+automation: !include automations.yaml
+scene: !include scenes.yaml
+input_boolean: !include input_boolean.yaml
+script: !include scripts.yaml
+```
+ 
+Grouping devices
+
+```
+  Lights:
+    - light.front_door
+    - light.hallupper
+    - light.halllower
+    - light.living_room
+    - light.bedroom
+  Inside_Lights:
+    - light.halllower
+    - light.hallupper
+    - light.living_room
+    - light.bedroom
+  Downstairs:
+    - light.halllower
+    - light.living_room
+  Upstairs:
+    - light.bedroom
+    - light.hallupper
+``` 
 Customizing entities, MDI icons  
 
+```
+sensor.dark_sky_summary:
+  friendly_name: Conditions
+sensor.dark_sky_temperature:
+  friendly_name: Temp
+sensor.dark_sky_daily_high_temperature:
+  friendly_name: Daily High
+sensor.dark_sky_daily_low_temperature:
+  friendly_name: Daily Low
+sensor.dark_sky_precip:
+  friendly_name: Precipitation
+sensor.market_price:
+  friendly_name: BTC
+  icon: mdi:currency-btc
+binary_sensor.ecolink_doorwindow_sensor_sensor:
+  hidden: true
+binary_sensor.ecolink_doorwindow_sensor_sensor_2:
+  hidden: true
+binary_sensor.ecolink_motion_sensor_sensor:
+  hidden: true
+```
 
+Map frontend and [Presence detection](https://home-assistant.io/components/#presence-detection)
+
+* iOS App
+* Owntracks
+* NMap scan
+* Integration with car smart entertainment systems
+* Others
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_map.png" width="600">
+
+Define a zone with a radius like so:
+
+```yaml
+  - name: Work
+    latitude: 40.450242
+    longitude: -79.951144
+    radius: 150
+    icon: mdi:desktop-mac
+```
 
 ## [Add-ons](https://home-assistant.io/addons/)
 
@@ -401,6 +507,8 @@ Home Assistant for agriculture
 
 ## Advanced Config
 [Templating](https://home-assistant.io/docs/configuration/templating/) - use 'Speak Temp' automation.  
+
+
 Alternate supported Databases  
 Grafana and InfluxDB  
 Themes.  
@@ -429,10 +537,10 @@ To proceed with z-wave:
 
 
 Lights:
-    Cheaper: Yeelight or IKEA Tradifi
+    Cheaper: Yeelight or IKEA Tradifi  
     More: Hue or Osram  
     
-[Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) - $60 includes zigbee hub, two door/window sensors, and a push button
+[Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) - $60 includes zigbee hub, two door/window sensors, and a push button  
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="200">
 
 
