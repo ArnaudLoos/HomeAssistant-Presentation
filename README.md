@@ -1,4 +1,4 @@
-Home Assistant is an open-source home automation platform written in Python. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
+Home Assistant is an open-source home automation platform written in Python ([Github](https://github.com/home-assistant/home-assistant)) on the backend and [Polymer](https://www.polymer-project.org/) on the frontend. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
 
 [Documentation](https://home-assistant.io/docs/)  
 [Installation options](https://home-assistant.io/docs/installation/)  
@@ -12,7 +12,8 @@ Home Assistant is an open-source home automation platform written in Python. Whe
 * Runs on Raspberry Pi, Synology NAS, or any computer running python
 * Not dependent on cloud services (most components), all data stored locally in sqllite DB
 * Ability to use almost any hardware, [regardless of vendor support](https://news.ycombinator.com/item?id=15989302)
-* Can work in conjunction with hubs from other manufacturers
+* Can work in conjunction with hubs from other manufacturers. Add HA in front of Smartthings
+* Integrates with Amazon Echo, Google Assistant, and HomeKit for voice
 * Helpful community, active Discord channel and forum
 * Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through [mobile web interface](https://home-assistant.io/docs/frontend/mobile/)
 
@@ -297,7 +298,7 @@ Grouping devices
     - light.bedroom
     - light.hallupper
 ``` 
-Customizing entities, MDI icons  
+Customizing - rename entities, don't display entities, add [MDI](https://materialdesignicons.com/) icons  
 
 ```
 sensor.dark_sky_summary:
@@ -506,46 +507,125 @@ Home Assistant for agriculture
 
 
 ## Advanced Config
-[Templating](https://home-assistant.io/docs/configuration/templating/) - use 'Speak Temp' automation.  
+[Templating](https://home-assistant.io/docs/configuration/templating/) - 
+Early on Home Assistant introduced templating which allows variables in scripts and automations. This makes it possible to adjust your condition and action based on the information of the trigger.
+
+```yaml
+- id: '2001'
+  alias: 'Speak temperature'
+  hide_entity: true
+  trigger:
+  - platform: state
+    entity_id: input_boolean.speak_temp
+    from: 'off'
+    to: 'on'
+  action:
+  - service: tts.google_say
+    entity_id: media_player.chromecast1
+    data_template:
+      message: >
+        The temperature is currently {{states ('sensor.dark_sky_temperature') | round(0) }} degrees and bitcoin is trading at {{states ('sensor.market_price') | round(0) }} dollars
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.speak_temp
+```
 
 
-Alternate supported Databases  
-Grafana and InfluxDB  
-Themes.  
+[Themes](https://community.home-assistant.io/c/projects/themes)  
 
-[AppDaemon](https://home-assistant.io/docs/ecosystem/appdaemon/)  
-commute script
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_dark.jpg" width="400">
 
-[HA Dashboard](https://home-assistant.io/docs/ecosystem/hadashboard/) with examples
+[AppDaemon](https://home-assistant.io/docs/ecosystem/appdaemon/) is a loosely coupled, multithreaded, sandboxed python execution environment for writing automation apps for Home Assistant. AppDaemon allows for writing more complex automations but is still based on state changes monitored by Home Assistant.
 
-Floorplan integration and kiosk mode  
-    Kindle FIRE kiosk app name?  
-    iOS app to create floorpan - [magicplan](https://itunes.apple.com/us/app/magicplan/id427424432?mt=8).  
-https://community.home-assistant.io/t/share-your-floorplan/21315
+An example script for checking commute time to work in the morning and back home in the afternoon. This is possible because I use [Owntracks](https://home-assistant.io/components/device_tracker.owntracks/) to track my location. Essentially my current coordinates and the coordinates of my destination are passed to Google Maps via an API to determine travel time.
 
-Advanced configuration through Node Red
-[Part 1](http://diyfuturism.com/index.php/2017/11/26/the-open-source-smart-home-getting-started-with-home-assistant-node-red/)
-[Part 2](http://diyfuturism.com/index.php/2017/12/14/basic-node-red-flows-for-automating-lighting-with-home-assistant/)
-[Part 3](http://diyfuturism.com/index.php/2018/01/18/going-further-with-home-automations-in-node-red/)
+```python
+import appdaemon.appapi as appapi
+
+class Commute(appapi.AppDaemon):
+
+  def initialize(self):
+    time = self.parse_time(self.args["time"])
+    self.run_daily(self.check_travel, time)
+
+  def check_travel(self, kwargs):
+    commute = int(self.get_state(self.args["sensor"]))
+    currentLocation = str(self.get_state(self.args["tracker"]))
+    self.log(commute)
+    self.log(currentLocation)
+    if commute > int(self.args["limit"]):
+        if currentLocation == 'Work':
+            message = "Current travel time from work to home is {} minutes".format(commute)
+            self.log(message)
+            self.call_service("notify/twilio", title="Commute Warning", message = message, target="+1412xxxxxxx")
+        elif (currentLocation == 'home') or (currentLocation == 'girlfriend'):
+            message = "Current travel time from home to work is {} minutes".format(commute)
+            self.log(message)
+            self.call_service("notify/twilio", title="Commute Warning", message = message, target="+1412xxxxxxx")
+        else:
+            message = "Location unknown so no message sent"
+            self.log(message)
+```
+
+The same components that I'm querying with this script I can display on the frontend.
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_travel.jpg" width="400">
+
+
+
+[HA Dashboard](https://home-assistant.io/docs/ecosystem/hadashboard/) is a modular, skinnable dashboard for Home Assistant that is intended to be wall mounted, and is optimized for distance viewing. Perfect for displaying on a cheap Android tablet or Kindle Fire.
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_dashboard.jpg" width="600">
+
+
+
+[Floorplan](https://community.home-assistant.io/c/third-party/floorplan) is a custom integration which allows you to show a floorplan of your home.
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/floorplan1.jpg" width="500">
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/floorplan2.png" width="500">
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/floorplan3.jpg" width="500">
+
+iOS app to create floorpan - [magicplan](https://itunes.apple.com/us/app/magicplan/id427424432?mt=8)  
+
+
+[Node Red](https://nodered.org/) is a visual workflow development tool, allowing the creation of complex workflows to control Home Assistant devices.
+
+3-part series on using Node Red to create Home Assistant automations.  
+[Part 1](http://diyfuturism.com/index.php/2017/11/26/the-open-source-smart-home-getting-started-with-home-assistant-node-red/)  
+[Part 2](http://diyfuturism.com/index.php/2017/12/14/basic-node-red-flows-for-automating-lighting-with-home-assistant/)  
+[Part 3](http://diyfuturism.com/index.php/2018/01/18/going-further-with-home-automations-in-node-red/)  
 
 ## Recommendations for starting out
 Hass.io running on a Raspberry Pi 3 - $50 with power and case  
 
-To proceed with z-wave: 
-[Aeotec Z-Stick Gen5](https://www.amazon.com/Aeotec-Z-Stick-Z-Wave-create-gateway/dp/B00X0AWA6E/) - $45  
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/aeotec.jpg" width="200">
+Most people start with automating lights. Many lights are either wifi controlled or come with their own hub with a proprietary zigbee radio inside.
+
+[Yeelight](https://www.amazon.com/YEELIGHT-YLDP03YL-Dimmable-Equivalent-Assistant/dp/B01LRTWQJ0/) Wi-Fi color bulb - $35
+
+[IKEA Tradfri](http://www.ikea.com/us/en/catalog/categories/departments/lighting/36815/) gateway kit with hub and two white bulbs - $80
+
+[Hue](https://www.store.meethue.com/) starter kit with hub and two white bulbs - $70
 
 
-Lights:
-    Cheaper: Yeelight or IKEA Tradifi  
-    More: Hue or Osram  
+
+Adding door/window sensors, motion detectors, fire alarms, water leak detectors, etc. requires investment in either Zigbee or Z-Wave
+
+ 
     
-[Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) - $60 includes zigbee hub, two door/window sensors, and a push button  
+A cheap, popular Zigbee based starter kit is the [Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) for $60 which includes zigbee hub, two door/window sensors, and a push button  
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="200">
 
 
-[Sonoff](https://www.itead.cc/sonoff-wifi-wireless-switch.html)  
+[Sonoff switches](https://www.itead.cc/sonoff-wifi-wireless-switch.html)  ($5) are a good option for automating on/off. You can splice one to the cable of any lamp or to any extension cord to make it controllable. They are available in either Wi-Fi or RF versions.
+
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/sonoff.jpg" width="200">
 
- [Tasmota](https://github.com/arendst/Sonoff-Tasmota) or [ESPurna](https://bitbucket.org/xoseperez/espurna) third-party firmware (Sonoff available in RF or Wifi version)  
-Tasmota adds MQTT support and OTA updates
+Flash the Sonoff with [Tasmota](https://github.com/arendst/Sonoff-Tasmota) or [ESPurna](https://bitbucket.org/xoseperez/espurna) third-party firmware. 
+These firmware provide OTA updates and MQTT support.
+
+There is a large ecosystem of z-wave enabled devices and sensors, and some sensors may only be available in z-wave versions. To proceed with z-wave you need a z-wave hub and the Aeotec Z-Stick is a popular option for the Raspberry Pi.
+
+  
+[Aeotec Z-Stick Gen5](https://www.amazon.com/Aeotec-Z-Stick-Z-Wave-create-gateway/dp/B00X0AWA6E/) - $45  
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/aeotec.jpg" height="200">
