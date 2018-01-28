@@ -532,7 +532,7 @@ Early on Home Assistant introduced templating which allows variables in scripts 
 
 [Themes](https://community.home-assistant.io/c/projects/themes)  
 
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_dark.jpg" width="400">
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_dark.jpg" width="600">
 
 [AppDaemon](https://home-assistant.io/docs/ecosystem/appdaemon/) is a loosely coupled, multithreaded, sandboxed python execution environment for writing automation apps for Home Assistant. AppDaemon allows for writing more complex automations but is still based on state changes monitored by Home Assistant.
 
@@ -568,13 +568,13 @@ class Commute(appapi.AppDaemon):
 
 The same components that I'm querying with this script I can display on the frontend.
 
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_travel.jpg" width="400">
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_travel.png" width="300">
 
 
 
 [HA Dashboard](https://home-assistant.io/docs/ecosystem/hadashboard/) is a modular, skinnable dashboard for Home Assistant that is intended to be wall mounted, and is optimized for distance viewing. Perfect for displaying on a cheap Android tablet or Kindle Fire.
 
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_dashboard.jpg" width="600">
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_dashboard.png" width="600">
 
 
 
@@ -591,9 +591,11 @@ iOS app to create floorpan - [magicplan](https://itunes.apple.com/us/app/magicpl
 
 [Node Red](https://nodered.org/) is a visual workflow development tool, allowing the creation of complex workflows to control Home Assistant devices.
 
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/node-red.png" width="600">
+
 3-part series on using Node Red to create Home Assistant automations.  
-[Part 1](http://diyfuturism.com/index.php/2017/11/26/the-open-source-smart-home-getting-started-with-home-assistant-node-red/)  
-[Part 2](http://diyfuturism.com/index.php/2017/12/14/basic-node-red-flows-for-automating-lighting-with-home-assistant/)  
+[Part 1](http://diyfuturism.com/index.php/2017/11/26/the-open-source-smart-home-getting-started-with-home-assistant-node-red/), 
+[Part 2](http://diyfuturism.com/index.php/2017/12/14/basic-node-red-flows-for-automating-lighting-with-home-assistant/), 
 [Part 3](http://diyfuturism.com/index.php/2018/01/18/going-further-with-home-automations-in-node-red/)  
 
 ## Recommendations for starting out
