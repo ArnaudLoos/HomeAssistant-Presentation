@@ -1,3 +1,5 @@
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_logo.jpeg" width="200">
+
 Home Assistant is an open-source home automation platform written in Python ([Github](https://github.com/home-assistant/home-assistant)) on the backend and [Polymer](https://www.polymer-project.org/) on the frontend. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
 
 [Documentation](https://home-assistant.io/docs/)  
