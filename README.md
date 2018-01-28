@@ -7,6 +7,8 @@ Home Assistant is an open-source home automation platform written in Python ([Gi
 [Components](https://home-assistant.io/components/)  
 [Demo](https://home-assistant.io/demo/)
 
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_full.png" width="600">
+
 #### HA advantages:
 
 * Speed of development, updates generally released bi-weekly
@@ -501,8 +503,9 @@ Scene good morning:
 
 ## Openness and ability to extend
 
-ESP8266, Arduino based devices - communicate via MQTT
-[LoRaWAN](https://home-assistant.io/components/thethingsnetwork/)  
+ESP8266, Arduino based devices - communicate via MQTT  
+
+There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LaRaWAN. LaRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and devices and allow querying of these sensors world-wide.
 Home Assistant for agriculture
 
 
