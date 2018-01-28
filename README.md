@@ -499,8 +499,8 @@ Scene good morning:
 
 ## Openness and ability to extend
 
-ESP8266, Arduino based devices  
-LaRa WAN  
+ESP8266, Arduino based devices - communicate via MQTT
+[LoRaWAN](https://home-assistant.io/components/thethingsnetwork/)  
 Home Assistant for agriculture
 
 
@@ -586,7 +586,7 @@ The same components that I'm querying with this script I can display on the fron
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/floorplan3.jpg" width="500">
 
-iOS app to create floorpan - [magicplan](https://itunes.apple.com/us/app/magicplan/id427424432?mt=8)  
+iOS app to create a floorpan template - [magicplan](https://itunes.apple.com/us/app/magicplan/id427424432?mt=8)  
 
 
 [Node Red](https://nodered.org/) is a visual workflow development tool, allowing the creation of complex workflows to control Home Assistant devices.
