@@ -83,8 +83,9 @@ Install HomeAssistant core on a full Debian OS. No add-on packages available nat
 ### [Hass.io](https://home-assistant.io/hassio/)
 HomeAssistant running in a Docker container on ResinOS  
 
-* Simpler built-in updater
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_update.png" width="500">
+
+* Simpler built-in updater
 * Integrated app store for simple add-on installation
 * Ability to integrate [community add-ons](https://github.com/hassio-addons) (web terminal, homebridge, pi-hole) and [third-party repositories](https://home-assistant.io/hassio/installing_third_party_addons/)
 
@@ -506,6 +507,7 @@ Scene good morning:
 ESP8266, Arduino based devices - communicate via MQTT  
 
 There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LaRaWAN. LaRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and devices and allow querying of these sensors world-wide.
+
 Home Assistant for agriculture
 
 
