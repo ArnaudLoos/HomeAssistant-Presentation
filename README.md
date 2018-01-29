@@ -7,6 +7,8 @@ Home Assistant is an open-source home automation platform written in Python ([Gi
 [Components](https://home-assistant.io/components/)  
 [Demo](https://home-assistant.io/demo/)
 
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_mobile.png" width="600">
+
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_full.png" width="600">
 
 #### HA advantages:
