@@ -34,41 +34,38 @@ Home Assistant is an open-source home automation platform written in Python ([Gi
 ## Home Automation Protocols
 
 #### [Z-Wave](https://home-assistant.io/docs/z-wave/installation/)
-mesh networking with master-slave model  
-Range up to 100m, 200m when meshed  
-Adding more devices helps with communication  
-Aeotec Gen-5 stick  
+Mesh networking with master-slave model  
+Up to 232 devices  
+Range up to 100m, 200m when meshed (adding more devices helps with communication) 
 Supports AES encryption  
-Assigned Node IDs  
-z-wave plus difference? Requires network key?  
-Has interoperability layer to ensure all Z-Wave hardware and software work together  
-low-latency transmission  
-up to 100 kbit/s  
+Low-latency transmission, up to 100 kbit/s  
 Nodes can be up to 30m apart, transmissions can hop nodes up to 4 times (adds delay)  
 Operates on 908MHz band, no interference from 2.4GHz (ISM) devices  
-Up to 232 devices  
+Has interoperability layer to ensure all Z-Wave hardware and software work together  
+[Z-Wave Plus](https://inovelli.com/z-wave-home-automation/z-wave-plus/) - Fifth gen Z-Wave, improved battery life(~50%), range(167m instead of 100m), bandwidth(250%), OTA firmware updates. Need primary controller to be Z-Wave plus for full benefits  
 
 #### Zigbee 
-requires hub - zigbee protocol not as standard  
-mesh networking  
-low-power, low-bandwidth (max 250 kbit/s)  
-indoor - 10 to 20m range  
-operates at 3.4 GHz   
-cheaper than Z-Wave  
+Also a mesh network topology
+No guaranteed interoperability between devices of different manufacturers  
+Data transmission at max 250 kbit/s   
+10m to 20m range  
+Operates in 2.4 GHz ISM band  
+Generally cheaper than Z-Wave  
 
 #### 433MHz or 315MHz RF 
-good for transmitting one way - doorbells, fans, weather stations  
+Good for transmitting one way - doorbells, fans, weather stations  
 Sonoff switches
 
 #### Wifi devices
-consume a lot of power
+Easiest to configure?  
+Consumes a lot of power relative to other protocols
 
 #### IR devices
 Can control anything that accepts a signal from a remote (tv, amplifier, etc)  
 [Broadlink RM mini3](http://www.ibroadlink.com/rmMini3/)
 
 #### Bluetooth
-Up to 10m signal generally
+Good up to 10m  
 
 
 ## [Installation](https://home-assistant.io/docs/installation/)
@@ -539,6 +536,7 @@ Early on Home Assistant introduced templating which allows variables in scripts 
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_dark.jpg" width="600">
 
+#### AppDaemon
 [AppDaemon](https://home-assistant.io/docs/ecosystem/appdaemon/) is a loosely coupled, multithreaded, sandboxed python execution environment for writing automation apps for Home Assistant. AppDaemon allows for writing more complex automations but is still based on state changes monitored by Home Assistant.
 
 An example script for checking commute time to work in the morning and back home in the afternoon. This is possible because I use [Owntracks](https://home-assistant.io/components/device_tracker.owntracks/) to track my location. Essentially my current coordinates and the coordinates of my destination are passed to Google Maps via an API to determine travel time. This is done continuously in the background by the Google Travel Time component.
@@ -586,14 +584,14 @@ class Commute(appapi.AppDaemon):
             self.log(message)
 ```
 
-
+#### HA Dashboard
 [HA Dashboard](https://home-assistant.io/docs/ecosystem/hadashboard/) is a modular, skinnable dashboard for Home Assistant that is intended to be wall mounted, and is optimized for distance viewing. Perfect for displaying on a cheap Android tablet or Kindle Fire.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_dashboard.png" width="600">
 
 
-
-[Floorplan](https://community.home-assistant.io/c/third-party/floorplan) is a custom integration which allows you to show a floorplan of your home.
+#### Floorplan
+[Floorplan](https://community.home-assistant.io/c/third-party/floorplan) is a custom integration which allows you to show a floorplan of your home and overlay device control on top.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/floorplan1.jpg" width="500">
 
@@ -603,7 +601,7 @@ class Commute(appapi.AppDaemon):
 
 iOS app to create a floorpan template - [magicplan](https://itunes.apple.com/us/app/magicplan/id427424432?mt=8)  
 
-
+#### Node Red
 [Node Red](https://nodered.org/) is a visual workflow development tool, allowing the creation of complex workflows to control Home Assistant devices.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/node-red.png" width="600">
