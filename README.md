@@ -1,6 +1,6 @@
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_logo.jpeg" width="200">
 
-Home Assistant is an open-source home automation platform written in Python ([Github](https://github.com/home-assistant/home-assistant)) on the backend and [Polymer](https://www.polymer-project.org/) on the frontend. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
+Home Assistant is an open-source home automation platform written in Python ([Github](https://github.com/home-assistant/home-assistant)) on the backend, and [Polymer](https://www.polymer-project.org/) on the frontend. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
 
 [Documentation](https://home-assistant.io/docs/)  
 [Installation options](https://home-assistant.io/docs/installation/)  
@@ -48,7 +48,7 @@ Nodes can be up to 30m apart, transmissions can hop nodes up to 4 times (adds de
 Operates on 908MHz band, no interference from 2.4GHz (ISM) devices  
 Up to 232 devices  
 
-### Zigbee 
+#### Zigbee 
 requires hub - zigbee protocol not as standard  
 mesh networking  
 low-power, low-bandwidth (max 250 kbit/s)  
@@ -73,7 +73,7 @@ Up to 10m signal generally
 
 ## [Installation](https://home-assistant.io/docs/installation/)
 
-Installation of Home Assistant on a Raspberry Pi is accomplished by flashing the Micro SD card with a downloaded image.
+Installation of Home Assistant on a Raspberry Pi is accomplished by flashing the micro SD card with a downloaded image.
 
 After initial boot an installer will download the latest HA build and run in the background. It takes around 15 minutes to complete, and afterwards the Home Assistant interface will be available at ```http://<RasPI IP>:8123```.
 
@@ -94,7 +94,7 @@ Home Assistant organizes all the components that comprise your home automation n
 
 For each component that you want to use in Home Assistant, you add code in your ```configuration.yaml``` file to specify its settings.
 
-[YAML](https://home-assistant.io/docs/configuration/yaml/) is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it may be due to incorrect indentation.
+The configuration file is written in YAML. [YAML](https://home-assistant.io/docs/configuration/yaml/) is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it may be due to incorrect indentation.
 
 
 ```yaml
@@ -123,7 +123,7 @@ sensor:
       - precip_probability
 ```
 
-Each of these items is an entity with a state value and can be seen on the States page in [Developer Tools](https://home-assistant.io/docs/tools/dev-tools/) in its raw form,  
+Each of these items is an entity with a state value and can be seen on the States page in [Developer Tools](https://home-assistant.io/docs/tools/dev-tools/) in its raw form  
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/state_darksky.png" width="500">  
 
@@ -147,7 +147,7 @@ Adding a switch component like a power plug or light will automatically cause an
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_lights.png" width="300">
 
-The power of home automation however comes from the automations!  
+### The power of home automation however comes from the automations!  
 
 Automations in Home Assistant are defined as trigger, condition, action.  
 
@@ -228,13 +228,14 @@ This is a toggle switch on the frontend that I can manually set, or set through 
 How do I get this toggle switch? I create it.
 
 ```yaml
-enable_security:
-  name: Alarm Enabled
-  icon: mdi:shield-outline
-  initial: on
+input_boolean:
+  enable_security:
+    name: Alarm Enabled
+    icon: mdi:shield-outline
+    initial: on
 ```
 
-###Scripts and Scenes
+### Scripts and Scenes
 
 If the action you wish your automation to perform is simple, like turning on a light, then you can call the service ```light.turn_on``` directly and pass the ```entity_id```. If however you wish to trigger a more complex action then it may be necessary for your action to call ```script.turn_on``` or ```scene.turn_on``` with the ```entity_id``` being the name of the script or scene to execute.
 
@@ -390,7 +391,7 @@ The ability to access your frontend through an onion address on the TOR network.
 
 Additional security automations
 
-```
+```yaml
 - id: '2076'
   alias: 'Security - Sliding Door opened while in bed'
   hide_entity: true
@@ -413,32 +414,29 @@ Additional security automations
 
 Script to sound the alarm.  
 
-```sound_the_alarm:
+```yaml
+sound_the_alarm:
   alias: Alarm Activated
   sequence:
     - service: light.turn_on
       entity_id: group.inside_lights
-      # activate a scene that sets all brightness to 255
-      # flash lights red
     - service: notify.twilio
       data:
         message: "Alarm activated!! Someone's in the house!!"
         target:
-          - +14122943661
+          - +1412xxxxxxx
     - service: tts.google_say
       entity_id: media_player.chromecast1
       data:
         message: "Alarm  alarm  alarm  alarm  alarm  alarm"
 ```
 
-[Dasher](https://github.com/maddox/dasher) is a simple way to bridge your Amazon Dash buttons to HTTP services.
-
-It is a Node application that listens on the network for Amazon Dash button pushes and sends a post command to the home-assistant REST API.
+[Dasher](https://github.com/maddox/dasher) is a simple way to bridge your Amazon Dash buttons to HTTP services. It is a Node application that listens on the network for Amazon Dash button presses and sends a post command to the Home Assistant REST API. I have one by my bed that I press when I get up in the morning and when I go to bed at night.
 
 
-Dasher example with scripting and scenes
+Only one of the following automations will kick off depending on the time of day I press the button.
 
-```
+```yaml
 - id: '1201'
   alias: 'Bedroom Dash Button - Good Morning'
   hide_entity: true
@@ -543,7 +541,22 @@ Early on Home Assistant introduced templating which allows variables in scripts 
 
 [AppDaemon](https://home-assistant.io/docs/ecosystem/appdaemon/) is a loosely coupled, multithreaded, sandboxed python execution environment for writing automation apps for Home Assistant. AppDaemon allows for writing more complex automations but is still based on state changes monitored by Home Assistant.
 
-An example script for checking commute time to work in the morning and back home in the afternoon. This is possible because I use [Owntracks](https://home-assistant.io/components/device_tracker.owntracks/) to track my location. Essentially my current coordinates and the coordinates of my destination are passed to Google Maps via an API to determine travel time.
+An example script for checking commute time to work in the morning and back home in the afternoon. This is possible because I use [Owntracks](https://home-assistant.io/components/device_tracker.owntracks/) to track my location. Essentially my current coordinates and the coordinates of my destination are passed to Google Maps via an API to determine travel time. This is done continuously in the background by the Google Travel Time component.
+
+```yaml
+  - platform: google_travel_time
+    name: Time to Home
+    api_key: xxxxxxxxxxxxx
+    origin: device_tracker.my_iphone
+    destination: zone.home
+    options:
+      mode: driving
+```
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_travel.png" width="300">
+
+This script merely checks that component's state value at a specific time, and if it is greater than my defined threshold then it send me a text.
+
 
 ```python
 import appdaemon.appapi as appapi
@@ -572,11 +585,6 @@ class Commute(appapi.AppDaemon):
             message = "Location unknown so no message sent"
             self.log(message)
 ```
-
-The same components that I'm querying with this script I can display on the frontend.
-
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_travel.png" width="300">
-
 
 
 [HA Dashboard](https://home-assistant.io/docs/ecosystem/hadashboard/) is a modular, skinnable dashboard for Home Assistant that is intended to be wall mounted, and is optimized for distance viewing. Perfect for displaying on a cheap Android tablet or Kindle Fire.
