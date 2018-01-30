@@ -1,6 +1,8 @@
+<p align="center">
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_logo.jpeg" width="200">
+</p>
 
-Home Assistant is an open-source home automation platform written in Python ([Github](https://github.com/home-assistant/home-assistant)) on the backend, and [Polymer](https://www.polymer-project.org/) on the frontend. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
+**Home Assistant** is an open-source home automation platform written in Python ([Github](https://github.com/home-assistant/home-assistant)) on the backend, and [Polymer](https://www.polymer-project.org/) on the frontend. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
 
 [Documentation](https://home-assistant.io/docs/)  
 [Installation options](https://home-assistant.io/docs/installation/)  
@@ -13,14 +15,14 @@ Home Assistant is an open-source home automation platform written in Python ([Gi
 
 #### HA advantages:
 
-* Speed of development, updates generally released bi-weekly
+* Speed of development - updates generally released bi-weekly
 * Number of integrations approaching 1,000
 * Runs on Raspberry Pi, Synology NAS, or any computer running python
 * Not dependent on cloud services (most components), all data stored locally in sqllite DB
-* Ability to use almost any hardware, [regardless of vendor support](https://news.ycombinator.com/item?id=15989302)
+* Ability to use almost any hardware, [don't rely on vendor support](https://news.ycombinator.com/item?id=15989302)
 * Can work in conjunction with hubs from other manufacturers. Add HA in front of Smartthings
 * Integrates with Amazon Echo, Google Assistant, and HomeKit for voice
-* Helpful community, active Discord channel and forum
+* Helpful community - active [Discord](https://discord.gg/c5DvZ4e) channel and [forum](https://community.home-assistant.io/)
 * Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through [mobile web interface](https://home-assistant.io/docs/frontend/mobile/)
 
 #### Competitors:
@@ -29,9 +31,9 @@ Home Assistant is an open-source home automation platform written in Python ([Gi
 * Wink 2
 * Apple Homekit
 * Belkin Wemo
-* Amazon Echo and Google Assistant (hubs?)
-* Others: Logitech, Lowe's Iris, Blink, High-end systems, Security companies like ADT and Guardian
-* OpenSource: OpenHAB
+* Amazon Echo
+* Google Home
+* OpenSource: OpenHAB, Domoticz
 
 ## Home Automation Protocols
 
@@ -47,7 +49,7 @@ Has interoperability layer to ensure all Z-Wave hardware and software work toget
 [Z-Wave Plus](https://inovelli.com/z-wave-home-automation/z-wave-plus/) - Fifth gen Z-Wave, improved battery life(~50%), range(167m instead of 100m), bandwidth(250%), OTA firmware updates. Need primary controller to be Z-Wave plus for full benefits  
 
 #### Zigbee 
-Also a mesh network topology
+Also a mesh network topology  
 No guaranteed interoperability between devices of different manufacturers  
 Data transmission at max 250 kbit/s   
 10m to 20m range  
@@ -59,7 +61,7 @@ Good for transmitting one way - doorbells, fans, weather stations
 Sonoff switches
 
 #### Wifi devices
-Easiest to configure?  
+Easiest to configure 
 Consumes a lot of power relative to other protocols
 
 #### IR devices
@@ -74,18 +76,30 @@ Good up to 10m
 
 Installation of Home Assistant on a Raspberry Pi is accomplished by flashing the micro SD card with a downloaded image.
 
-After initial boot an installer will download the latest HA build and run in the background. It takes around 15 minutes to complete, and afterwards the Home Assistant interface will be available at ```http://<RasPI IP>:8123```.
+After initial boot an installer will download the latest HA build and run in the background. It takes around 15 minutes to complete, and afterwards the Home Assistant interface will be available at ```http://<RasPI IP>:8123```
 
 ### [Hassbian](https://home-assistant.io/docs/installation/hassbian/)
-Install HomeAssistant core on a full Debian OS. No add-on packages available natively, packages like DuckDNS and Mosquitto MQTT must be installed manually afterwards.
+Install HomeAssistant core on a full Debian OS. No add-on packages available natively, but includes a tool called [hassbian-config](https://home-assistant.io/docs/installation/hassbian/customization/) to aid with the installation of some common packages.
+
+Has the benefit and/or drawback of running a full OS.
+
+Upgrades are accomplished through a pip3 package update.
+
+```
+$ sudo su -s /bin/bash homeassistant
+$ source /srv/homeassistant/bin/activate
+$ pip3 install --upgrade homeassistant
+```
+
 
 ### [Hass.io](https://home-assistant.io/hassio/)
 HomeAssistant running in a Docker container on ResinOS  
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_update.png" width="500">
 
-* Simpler built-in updater
-* Integrated app store for simple add-on installation
+* Simple built-in updater
+* No need to manage underlying OS
+* Integrated app store for simple add-on installation and updating
 * Ability to integrate [community add-ons](https://github.com/hassio-addons) (web terminal, homebridge, pi-hole) and [third-party repositories](https://home-assistant.io/hassio/installing_third_party_addons/)
 
 ## Home Assistant Basics
@@ -93,7 +107,7 @@ Home Assistant organizes all the components that comprise your home automation n
 
 For each component that you want to use in Home Assistant, you add code in your ```configuration.yaml``` file to specify its settings.
 
-The configuration file is written in YAML. [YAML](https://home-assistant.io/docs/configuration/yaml/) is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it may be due to incorrect indentation.
+The configuration file is written in YAML. [YAML](https://home-assistant.io/docs/configuration/yaml/) is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation.
 
 
 ```yaml
@@ -130,9 +144,7 @@ and displayed on the frontend for easy viewing.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_weather.png" width="300">
 
-
-
-Additional sensors can be added by defining the component in your configuration.yaml file. The bitcoin price sensor can be added with the following:
+Additional sensors can be added by defining the component in your ```configuration.yaml``` file. The bitcoin price sensor can be added with the following:
 
  
 ```yaml
@@ -218,7 +230,7 @@ My security alarm. If my hall motion detector registers motion, and nobody is ho
         - +14122943661
 ```
 
-In the above example I check the state of an ```input_boolean``` named ```enable_security``` and only execute the action if it is set to ```ON```
+In the above example I check the state of an ```input_boolean``` named ```enable_security``` and only execute the action if the state is ```ON```
 
 This is a toggle switch on the frontend that I can manually set, or set through a different automation.
 
@@ -234,22 +246,28 @@ input_boolean:
     initial: on
 ```
 
+I define different ```input_boolean``` and use them as conditionals to ensure my automations only fire exactly when I want them to.
+
 ### Scripts and Scenes
 
-If the action you wish your automation to perform is simple, like turning on a light, then you can call the service ```light.turn_on``` directly and pass the ```entity_id```. If however you wish to trigger a more complex action then it may be necessary for your action to call ```script.turn_on``` or ```scene.turn_on``` with the ```entity_id``` being the name of the script or scene to execute.
+If the action you wish your automation to perform is simple, like turning on a light, then you can call the service ```light.turn_on``` directly and pass the ```entity_id```. If, however, you wish to trigger a more complex action then it may be necessary for your action to call ```script.turn_on``` or ```scene.turn_on``` with the ```entity_id``` being the name of the script or scene to execute.
 
-[Scripts](https://home-assistant.io/docs/scripts/) are a sequence of actions that Home Assistant will execute. [Scenes](https://home-assistant.io/components/scene/) capture the states you want certain entities to be.
+[Scripts](https://home-assistant.io/docs/scripts/) are a sequence of actions that Home Assistant will execute. 
 
 ```yaml
 script:
   example_script:
     sequence:
       - service: light.turn_on
-        entity_id: light.ceiling
+        entity_id: light.kitchen
+      - service: light.turn_on
+        entity_id: light.bedroom
       - service: notify.notify
         data:
-          message: 'Turned on the ceiling light!'
+          message: 'Lights are on!'
 ```
+
+[Scenes](https://home-assistant.io/components/scene/) capture the states you want certain entities to be.
 
 ```yaml
 scene:
@@ -270,7 +288,7 @@ scene:
         source: HDMI 1
 ```
 
-
+### Additional Config
 
 [Splitting up the configuration](https://home-assistant.io/docs/configuration/splitting_configuration/)
 
@@ -327,17 +345,22 @@ binary_sensor.ecolink_motion_sensor_sensor:
   hidden: true
 ```
 
-Map frontend and [Presence detection](https://home-assistant.io/components/#presence-detection)
+
+By integrating [device tracking](https://home-assistant.io/components/device_tracker/), Home Assistant can trigger automations based on your location and show your location on its map.
+
+Location tracking can be done in many different ways:
 
 * iOS App
+* iCloud
 * Owntracks
 * NMap scan
-* Integration with car smart entertainment systems
-* Others
+* Many Others
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_map.png" width="600">
 
-Define a zone with a radius like so:
+You can also define zones such that events will fire when you enter or leave the zone.
+
+Define a zone like so:
 
 ```yaml
   - name: Work
@@ -351,25 +374,28 @@ Define a zone with a radius like so:
 
 
 ### SSH, Samba, Git
-Add-ons for updating configurations
-
+Add-ons for updating configurations:
 
 * Samba - Manage Home Assistant files exposed over an SMB share
-* Git - Load and update configuration files for Home Assistant from a GIT repository
+* Git - Load and update configuration files for Home Assistant from a Git repository
 * SSH - Enables easy ssh access for controlling the host
-  * [hassio](https://home-assistant.io/docs/tools/hass/)
+  * [hass](https://home-assistant.io/docs/tools/hass/) - command line control over Home Assistant (reload, start/stop services)
   * Can also control through GUI
+
+### Duck DNS
+Dynamic DNS to access Home Assistant on the Internet
 
 ### Let's Encrypt
 Easily and automatically add a free SSL certificate
 
 ### Mosquitto
-Enables a local MQTT broker  
+Enables a local MQTT broker.
+ 
 [MQTT](https://home-assistant.io/components/mqtt/) is a machine-to-machine or “Internet of Things” connectivity protocol on top of TCP/IP. It allows extremely lightweight publish/subscribe messaging transport.  
 Network devices can either publish simple information to an MQTT topic or subscribe to a topic to consume the data published there by another device.  
 The main advantage of MQTT is that it is a common protocol in the IoT space and allows easy sharing of information across devices that would otherwise be unable to communicate with each other.  
 
-Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over WiFi. But how do we  get these values into Home Assistant? MQTT to the rescue. There are MQTT libraries available for many platforms. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance if I place my new sensor in my bedroom I can tell it to publish to the home/temp/bedroom/master/ topic or if I wish to organize it differently I could instead publish to /home/upstairs/bedroom/temp/.  
+Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over WiFi. But how do we  get these values into Home Assistant? MQTT. There are MQTT libraries available for many platforms. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance if I place my new sensor in my bedroom I can tell it to publish to the ```home/temp/bedroom/master/``` topic or if I wish to organize it differently I could instead publish to ```/home/upstairs/bedroom/temp/```.  
 
 Then, after I define the MQTT component in my configuration, I define a sensor to read that particular value.
 
@@ -388,7 +414,7 @@ The ability to access your frontend through an onion address on the TOR network.
 
 ## Examples
 
-Additional security automations
+Additional security automations.
 
 ```yaml
 - id: '2076'
@@ -503,11 +529,7 @@ Scene good morning:
 
 ESP8266, Arduino based devices - communicate via MQTT  
 
-There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LaRaWAN. LaRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and devices and allow querying of these sensors world-wide.
-
-Home Assistant for agriculture
-
-
+There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LoRaWAN. LoRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and allow querying of these sensors world-wide.
 
 
 ## Advanced Config
@@ -535,6 +557,36 @@ Early on Home Assistant introduced templating which allows variables in scripts 
 
 
 [Themes](https://community.home-assistant.io/c/projects/themes)  
+
+It is possible to extensively customize Home Assistant's look from within your ```configuration.yaml```
+
+```yaml
+  themes:
+    dark_theme:
+      # Main colors
+      primary-color: '#5294E2'                                                        # Header
+      accent-color: '#E45E65'                                                         # Accent color
+      dark-primary-color: 'var(--accent-color)'                                       # Hyperlinks
+      light-primary-color: 'var(--accent-color)'                                      # Horizontal line in about
+      # Text colors
+      primary-text-color: '#FFFFFF'                                                   # Primary text colour, here is referencing dark-primary-color
+      text-primary-color: 'var(--primary-text-color)'                                 # Primary text colour
+      secondary-text-color: '#5294E2'                                                 # For secondary titles in more info boxes etc.
+      disabled-text-color: '#7F848E'                                                  # Disabled text colour
+      label-badge-border-color: 'green'                                               # Label badge border, just a reference value
+      # Background colors
+      primary-background-color: '#383C45'                                             # Settings background
+      secondary-background-color: '#383C45'                                           # Main card UI background
+      divider-color: 'rgba(0, 0, 0, .12)'                                             # Divider
+      # Table rows
+      table-row-background-color: '#353840'                                           # Table row
+      table-row-alternative-background-color: '#3E424B'                               # Table row alternative
+      # Nav Menu
+      paper-listbox-color: '#5294E2'                                                  # Navigation menu selection hoover
+      paper-listbox-background-color: '#2E333A'                                       # Navigation menu background
+      paper-grey-50: 'var(--primary-text-color)'
+      paper-grey-200: '#414A59'                                                       # Navigation menu selection
+```
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_dark.jpg" width="600">
 
@@ -593,7 +645,7 @@ class Commute(appapi.AppDaemon):
 
 
 #### Floorplan
-[Floorplan](https://community.home-assistant.io/c/third-party/floorplan) is a custom integration which allows you to show a floorplan of your home and overlay device control on top.
+[Floorplan](https://community.home-assistant.io/c/third-party/floorplan) is a custom integration which allows you to show a floorplan of your home and overlay device control over top.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/floorplan1.jpg" width="500">
 
@@ -616,7 +668,7 @@ iOS app to create a floorpan template - [magicplan](https://itunes.apple.com/us/
 ## Recommendations for starting out
 Hass.io running on a Raspberry Pi 3 - $50 with power and case  
 
-Most people start with automating lights. Many lights are either wifi controlled or come with their own hub with a proprietary zigbee radio inside.
+Many people start with automating lights. Many lights are either wifi controlled or come with their own hub with a proprietary zigbee radio inside.
 
 [Yeelight](https://www.amazon.com/YEELIGHT-YLDP03YL-Dimmable-Equivalent-Assistant/dp/B01LRTWQJ0/) Wi-Fi color bulb - $35
 
@@ -624,24 +676,20 @@ Most people start with automating lights. Many lights are either wifi controlled
 
 [Hue](https://www.store.meethue.com/) starter kit with hub and two white bulbs - $70
 
-
-
 Adding door/window sensors, motion detectors, fire alarms, water leak detectors, etc. requires investment in either Zigbee or Z-Wave
 
- 
-    
-A cheap, popular Zigbee based starter kit is the [Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) for $60 which includes zigbee hub, two door/window sensors, and a push button  
+A cheap, popular, Zigbee based starter kit is the [Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) for $60 which includes a zigbee hub, two door/window sensors, and a push button.  
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="200">
 
 
-[Sonoff switches](https://www.itead.cc/sonoff-wifi-wireless-switch.html)  ($5) are a good option for automating on/off. You can splice one to the cable of any lamp or to any extension cord to make it controllable. They are available in either Wi-Fi or RF versions.
+[Sonoff switches](https://www.itead.cc/sonoff-wifi-wireless-switch.html)  ($5) are a good option for automating power on/off. You can splice one to the cable of any lamp or to any extension cord to make it controllable. They are available in either Wi-Fi or RF versions.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/sonoff.jpg" width="200">
 
 Flash the Sonoff with [Tasmota](https://github.com/arendst/Sonoff-Tasmota) or [ESPurna](https://bitbucket.org/xoseperez/espurna) third-party firmware. 
 These firmware provide OTA updates and MQTT support.
 
-There is a large ecosystem of z-wave enabled devices and sensors, and some sensors may only be available in z-wave versions. To proceed with z-wave you need a z-wave hub and the Aeotec Z-Stick is a popular option for the Raspberry Pi.
+There is a large ecosystem of Z-Wave enabled devices and sensors, and some sensors may only be available in Z-Wave versions. To proceed with Z-Wave you need a Z-Wave hub and the Aeotec Z-Stick (Z-Wave plus version) is a popular option for the Raspberry Pi.
 
   
 [Aeotec Z-Stick Gen5](https://www.amazon.com/Aeotec-Z-Stick-Z-Wave-create-gateway/dp/B00X0AWA6E/) - $45  
