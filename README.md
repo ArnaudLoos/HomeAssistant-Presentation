@@ -19,11 +19,25 @@
 * Number of integrations approaching 1,000
 * Runs on Raspberry Pi, Synology NAS, or any computer running python
 * Not dependent on cloud services (most components), all data stored locally in sqllite DB
-* Ability to use almost any hardware, [don't rely on vendor support](https://news.ycombinator.com/item?id=15989302)
+* Ability to use almost any hardware, [doesn't rely on vendor support](https://news.ycombinator.com/item?id=15989302)
 * Can work in conjunction with hubs from other manufacturers. Add HA in front of Smartthings
 * Integrates with Amazon Echo, Google Assistant, and HomeKit for voice
 * Helpful community - active [Discord](https://discord.gg/c5DvZ4e) channel and [forum](https://community.home-assistant.io/)
-* Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through [mobile web interface](https://home-assistant.io/docs/frontend/mobile/)
+* Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through [mobile web interface](https://home-assistant.io/docs/frontend/mobile/)  
+
+<br>
+
+> In many cases, the adoption of the technology [IoT] is being driven 
+by businesses eager to gain valuable data from citizens, with 
+little concern for their privacy or the protection of that data.
+
+> All of the analysts consulted pointed out that personal data 
+from the connected home will often be bought and sold 
+with consumers largely remaining oblivious to potential 
+implications.
+[Internet of Things: Pinning down the IoT](https://fsecureconsumer.files.wordpress.com/2018/01/f-secure_pinning-down-the-iot_final.pdf)
+
+<br>
 
 #### Competitors:
 
@@ -457,6 +471,10 @@ sound_the_alarm:
 ```
 
 [Dasher](https://github.com/maddox/dasher) is a simple way to bridge your Amazon Dash buttons to HTTP services. It is a Node application that listens on the network for Amazon Dash button presses and sends a post command to the Home Assistant REST API. I have one by my bed that I press when I get up in the morning and when I go to bed at night.
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/amazondash.jpg" width="200">
+
+Amazon Dash buttons can be good, cheap, battery powered buttons.  You need to be an Amazon Prime member however to configure it.
 
 
 Only one of the following automations will kick off depending on the time of day I press the button.
