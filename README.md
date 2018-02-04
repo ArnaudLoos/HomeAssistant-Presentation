@@ -472,7 +472,9 @@ sound_the_alarm:
 
 [Dasher](https://github.com/maddox/dasher) is a simple way to bridge your Amazon Dash buttons to HTTP services. It is a Node application that listens on the network for Amazon Dash button presses and sends a post command to the Home Assistant REST API. I have one by my bed that I press when I get up in the morning and when I go to bed at night.
 
+<p align="center">
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/amazondash.jpg" width="200">
+</p>
 
 Amazon Dash buttons can be good, cheap, battery powered buttons.  You need to be an Amazon Prime member however to configure it.
 
