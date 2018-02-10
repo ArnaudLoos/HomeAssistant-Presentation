@@ -419,7 +419,11 @@ Add-ons for updating configurations:
   * Can also control through GUI
 
 ### Duck DNS
-Dynamic DNS to access Home Assistant on the Internet. Secure your installation if it is publicly exposed!
+Dynamic DNS to access Home Assistant on the Internet.  
+
+***Secure your installation if it is publicly exposed!***
+
+Consider not publicly exposing your Home Assistant installation to the world and instead keeping it secure inside your network. Various access methods such as OpenVPN, [TOR](https://home-assistant.io/docs/ecosystem/tor/), or [ZeroTier](https://www.zerotier.com/) exist which allow for more secure access. Setup instructions for ZeroTier can be found [here](https://iamkelv.in/blog/2017/06/zerotier.html).
 
 ### Let's Encrypt
 Easily and automatically add a free SSL certificate
