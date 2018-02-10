@@ -14,7 +14,7 @@
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_mobile.png" width="600">
 
 
-#### HA advantages:
+#### HA Advantages:
 
 * Speed of development - updates generally released bi-weekly
 * Number of integrations approaching 1,000
@@ -30,12 +30,11 @@
 
 > In many cases, the adoption of the technology [IoT] is being driven 
 by businesses eager to gain valuable data from citizens, with 
-little concern for their privacy or the protection of that data.
-
-> All of the analysts consulted pointed out that personal data 
+little concern for their privacy or the protection of that data.  
+All of the analysts consulted pointed out that personal data 
 from the connected home will often be bought and sold 
 with consumers largely remaining oblivious to potential 
-implications.
+implications.  
 [Internet of Things: Pinning down the IoT](https://fsecureconsumer.files.wordpress.com/2018/01/f-secure_pinning-down-the-iot_final.pdf)
 
 <br>
@@ -70,7 +69,7 @@ Nodes can be up to 30m apart, transmissions can hop nodes up to 4 times (adds de
 Operates on 908MHz band, no interference from 2.4GHz (ISM) devices  
 Has interoperability layer to ensure all Z-Wave hardware and software work together  
 [Z-Wave Plus](https://inovelli.com/z-wave-home-automation/z-wave-plus/) - Fifth gen Z-Wave, improved battery life(~50%), range(167m instead of 100m), bandwidth(250%), OTA firmware updates. Need primary controller to be Z-Wave plus for full benefits  
-In HA Z-Wave support is provided by python-openzwave
+In HA, Z-Wave support is provided by python-openzwave
 
 #### Zigbee 
 Also a mesh network topology  
@@ -82,7 +81,8 @@ Generally cheaper than Z-Wave
 
 #### 433MHz or 315MHz RF 
 Good for transmitting one way - doorbells, fans, weather stations  
-Sonoff switches
+Sonoff switches  
+[Broadlink RM Pro](http://www.ibroadlink.com/rm/) - controller
 
 #### Wifi devices
 Easiest to configure   
@@ -90,7 +90,7 @@ Consumes a lot of power relative to other protocols
 
 #### IR devices
 Can control anything that accepts a signal from a remote (tv, amplifier, etc)  
-[Broadlink RM mini3](http://www.ibroadlink.com/rmMini3/)
+[Broadlink RM Mini3](http://www.ibroadlink.com/rmMini3/)
 
 #### Bluetooth
 Good up to 10m  
@@ -397,7 +397,7 @@ You can also define zones such that events will trigger when you enter or leave 
 Define a zone like so:
 
 ```yaml
-  - name: Code_and_Supply
+  - name: Code_&_Supply
     latitude: 40.46001
     longitude: -79.93072
     radius: 150
