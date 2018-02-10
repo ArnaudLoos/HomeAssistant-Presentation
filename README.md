@@ -70,6 +70,7 @@ Nodes can be up to 30m apart, transmissions can hop nodes up to 4 times (adds de
 Operates on 908MHz band, no interference from 2.4GHz (ISM) devices  
 Has interoperability layer to ensure all Z-Wave hardware and software work together  
 [Z-Wave Plus](https://inovelli.com/z-wave-home-automation/z-wave-plus/) - Fifth gen Z-Wave, improved battery life(~50%), range(167m instead of 100m), bandwidth(250%), OTA firmware updates. Need primary controller to be Z-Wave plus for full benefits  
+In HA Z-Wave support is provided by python-openzwave
 
 #### Zigbee 
 Also a mesh network topology  
@@ -131,6 +132,8 @@ Home Assistant organizes all the components that comprise your home automation n
 For each [component](https://home-assistant.io/components/) that you want to use in Home Assistant, you add code in your ```configuration.yaml``` file to specify its settings.
 
 The configuration file is written in YAML. [YAML](https://home-assistant.io/docs/configuration/yaml/) is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation.
+
+It is possible to edit YAML files from within Home Assistant using the [HASS Configuration UI](https://home-assistant.io/docs/ecosystem/hass-configurator/)
 
 
 ```yaml
@@ -311,6 +314,8 @@ scene:
         source: HDMI 1
 ```
 
+An add-on project named [scenegen](https://home-assistant.io/docs/ecosystem/scenegen/) can be used to create scenes by example, by reading the current states of devices and outputting a corresponding scene.
+
 ### Additional Config
 
 ***[Splitting up the configuration](https://home-assistant.io/docs/configuration/splitting_configuration/)***
@@ -387,7 +392,7 @@ Location tracking can be done in many different ways:
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_map.png" width="600">
 
-You can also define zones such that events will fire when you enter or leave the zone.
+You can also define zones such that events will trigger when you enter or leave the zone.
 
 Define a zone like so:
 
@@ -399,7 +404,7 @@ Define a zone like so:
     icon: mdi:desktop-classic
 ```
 
-You even have the option of triggering events based on the direction of travel with the [proximity](https://home-assistant.io/components/proximity/) component.
+You even have the option of triggering events based on the direction of travel with the [proximity](https://home-assistant.io/components/proximity/) component. You can have the thermostat raise the temperature as you approach home.
 
 ## [Add-ons](https://home-assistant.io/addons/)
 
@@ -414,7 +419,7 @@ Add-ons for updating configurations:
   * Can also control through GUI
 
 ### Duck DNS
-Dynamic DNS to access Home Assistant on the Internet
+Dynamic DNS to access Home Assistant on the Internet. Secure your installation if it is publicly exposed!
 
 ### Let's Encrypt
 Easily and automatically add a free SSL certificate
@@ -426,17 +431,17 @@ Enables a local MQTT broker.
 Network devices can either publish simple information to an MQTT topic or subscribe to a topic to consume the data published there by another device.  
 The main advantage of MQTT is that it is a common protocol in the IoT space and allows easy sharing of information across devices that would otherwise be unable to communicate with each other.  
 
-Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over WiFi. But how do we  get these values into Home Assistant? MQTT. There are MQTT libraries available for many platforms. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance if I place my new sensor in my bedroom I can tell it to publish to the ```home/temp/bedroom/master/``` topic or if I wish to organize it differently I could instead publish to ```/home/upstairs/bedroom/temp/```.  
+Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over WiFi. But how do we  get these values into Home Assistant? MQTT. There are MQTT libraries available for many platforms, including Arduino. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance, if I place my new sensor in my bedroom I can tell it to publish to the ```home/temp/bedroom/master/``` topic or if I wish to organize it differently I could instead publish to ```/home/upstairs/bedroom/temp/```.  
 
 Then, after I define the MQTT component in my configuration, I define a sensor to read that particular value.
 
 ```yaml
   - platform: mqtt 
     name: "Bedroom Temp"
-    state_topic: "home/bedroom/temperature"
+    state_topic: "home/upstairs/bedroom/temp"
     unit_of_measurement: "ºF"
 ```
-And now inside Home Assistant I have a component named `sensor.bedroom_temp` with the value being fed in directly from the sensor with MQTT as the middle man.
+And now inside Home Assistant I have a component named `sensor.bedroom_temp` with a value being updated as the MQTT topic gets updated.
 
 ### [TOR](https://home-assistant.io/docs/ecosystem/tor/)
 The ability to access your frontend through an onion address on the TOR network. With this enabled, you do not need to open your firewall ports or setup HTTPS to enable secure remote access.
@@ -482,12 +487,14 @@ sound_the_alarm:
         target:
           - +1412xxxxxxx
     - service: tts.google_say
-      entity_id: media_player.chromecast1
+      entity_id: media_player.chromecast
       data:
         message: "Alarm  alarm  alarm  alarm  alarm  alarm"
 ```
 
 [Dasher](https://github.com/maddox/dasher) is a simple way to bridge your Amazon Dash buttons to HTTP services. It is a Node application that listens on the network for Amazon Dash button presses and sends a post command to the Home Assistant REST API. I have one by my bed that I press when I get up in the morning and when I go to bed at night.
+
+***UPDATE:*** Dasher appears to have fallen out of date and no longer correctly runs on a Raspberry Pi. The [Amazon-Dash](https://github.com/nekmo/amazon-dash) project appears to be a working implementation.
 
 <p align="center">
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/amazondash.jpg" width="200">
@@ -515,7 +522,7 @@ Only one of the following automations will kick off depending on the time of day
     service: script.turn_on
     entity_id: script.good_morning
 
-- id: '1202'
+- id: '0007'
   alias: 'Bedroom Dash Button - Good Night'
   hide_entity: True
   trigger:
@@ -532,7 +539,7 @@ Only one of the following automations will kick off depending on the time of day
     entity_id: script.good_night
 ```
 
-Script good morning:
+script.good_morning:
 
 ```
 good_morning:
@@ -546,7 +553,7 @@ good_morning:
       entity_id: input_boolean.in_bed
 ```
 
-Scene good morning:
+scene.good_morning:
 
 ```
 - name: Good Morning
@@ -564,36 +571,42 @@ Scene good morning:
 
 ## Openness and ability to extend
 
-ESP8266, Arduino based devices - communicate via MQTT  
+ESP8266, Arduino based devices, and many others can communicate via MQTT  
 
 There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LoRaWAN. LoRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and allow querying of these sensors world-wide.
 
+* [Python API](https://dev-docs.home-assistant.io/en/dev/)
+* [Websocket API](https://home-assistant.io/developers/websocket_api/)
+* [REST API](https://home-assistant.io/developers/rest_api/)
+* [Python REST API](https://home-assistant.io/developers/python_api/)
+
 
 ## Advanced Config
-[Templating](https://home-assistant.io/docs/configuration/templating/) - 
+***[Templating](https://home-assistant.io/docs/configuration/templating/)*** 
+
 Early on Home Assistant introduced templating which allows variables in scripts and automations. This makes it possible to adjust your condition and action based on the information of the trigger.
 
 ```yaml
-- id: '0007'
-  alias: 'Speak temperature'
+- id: '0008'
+  alias: 'Daily Update'
   hide_entity: true
   trigger:
   - platform: state
-    entity_id: input_boolean.speak_temp
+    entity_id: input_boolean.daily_update
     from: 'off'
     to: 'on'
   action:
   - service: tts.google_say
-    entity_id: media_player.chromecast1
+    entity_id: media_player.chromecast
     data_template:
       message: >
         The temperature is currently {{states ('sensor.dark_sky_temperature') | round(0) }} degrees and bitcoin is trading at {{states ('sensor.market_price') | round(0) }} dollars
   - service: input_boolean.turn_off
-    entity_id: input_boolean.speak_temp
+    entity_id: input_boolean.daily_update
 ```
 
 
-[Themes](https://community.home-assistant.io/c/projects/themes)  
+***[Themes](https://community.home-assistant.io/c/projects/themes)***  
 
 It is possible to extensively customize Home Assistant's look from within your ```configuration.yaml```
 
@@ -627,10 +640,10 @@ It is possible to extensively customize Home Assistant's look from within your `
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_dark.jpg" width="600">
 
-#### AppDaemon
-[AppDaemon](https://home-assistant.io/docs/ecosystem/appdaemon/) is a loosely coupled, multithreaded, sandboxed python execution environment for writing automation apps for Home Assistant. AppDaemon allows for writing more complex automations but is still based on state changes monitored by Home Assistant.
+#### [AppDaemon](https://home-assistant.io/docs/ecosystem/appdaemon/)
+AppDaemon is a loosely coupled, multithreaded, sandboxed python execution environment for writing automation apps for Home Assistant. AppDaemon allows for writing more complex automations but is still based on state changes monitored by Home Assistant.
 
-An example script for checking commute time to work in the morning and back home in the afternoon. This is possible because I use [Owntracks](https://home-assistant.io/components/device_tracker.owntracks/) to track my location. Essentially my current coordinates and the coordinates of my destination are passed to Google Maps via an API to determine travel time. This is done continuously in the background by the Google Travel Time component.
+For example I have a script checking my commute time to work in the morning and back home in the afternoon. This is possible because I use [Owntracks](https://home-assistant.io/components/device_tracker.owntracks/) to track my location. Essentially my current coordinates and the coordinates of my destination are passed to Google Maps via an API to determine travel time. This is done continuously in the background by the Google Travel Time component.
 
 ```yaml
   - platform: google_travel_time
@@ -644,8 +657,30 @@ An example script for checking commute time to work in the morning and back home
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_travel.png" width="300">
 
-This script merely checks that component's state value at a specific time, and if it is greater than my defined threshold then it send me a text.
+This script merely checks that component's state value at a specific time, and if it is greater than my defined threshold then it sends me a text.
 
+First I define my apps in ```apps.yaml```  
+Defining apps this way allows me to reuse my code to trigger both alerts with different variables.
+
+
+```
+commute_work:
+  module: commute
+  class: Commute
+  time: "8:00:00"
+  limit: 30
+  sensor: sensor.time_to_work
+  tracker: device_tracker.my_iphone
+
+commute_home:
+  module: commute
+  class: Commute
+  time: "16:50:00"
+  limit: 30
+  sensor: sensor.time_to_home
+  tracker: device_tracker.my_iphone
+```
+And now I write my ```commute.py``` app.
 
 ```python
 import appdaemon.appapi as appapi
@@ -675,14 +710,14 @@ class Commute(appapi.AppDaemon):
             self.log(message)
 ```
 
-#### HA Dashboard
-[HA Dashboard](https://home-assistant.io/docs/ecosystem/hadashboard/) is a modular, skinnable dashboard for Home Assistant that is intended to be wall mounted, and is optimized for distance viewing. Perfect for displaying on a cheap Android tablet or Kindle Fire.
+#### [HA Dashboard](https://home-assistant.io/docs/ecosystem/hadashboard/)
+HA Dashboard is a modular, skinnable dashboard for Home Assistant that is intended to be wall mounted, and is optimized for distance viewing. Perfect for displaying on a cheap Android tablet or Kindle Fire.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_dashboard.png" width="600">
 
 
-#### Floorplan
-[Floorplan](https://community.home-assistant.io/c/third-party/floorplan) is a custom integration which allows you to show a floorplan of your home and overlay device control over top.
+#### [Floorplan](https://community.home-assistant.io/c/third-party/floorplan)
+Floorplan is a custom integration which allows you to show a floorplan of your home and overlay device control over top.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/floorplan1.jpg" width="500">
 
@@ -692,8 +727,8 @@ class Commute(appapi.AppDaemon):
 
 iOS app to create a floorpan template - [magicplan](https://itunes.apple.com/us/app/magicplan/id427424432?mt=8)  
 
-#### Node Red
-[Node Red](https://nodered.org/) is a visual workflow development tool, allowing the creation of complex workflows to control Home Assistant devices.
+#### [Node Red](https://nodered.org/)
+Node Red is a visual workflow development tool, allowing the creation of complex workflows to control Home Assistant devices.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/node-red.png" width="600">
 
@@ -711,11 +746,14 @@ Many people start with automating lights. Many lights are either wifi controlled
 
 [IKEA Tradfri](http://www.ikea.com/us/en/catalog/categories/departments/lighting/36815/) gateway kit with hub and two white bulbs - $80
 
-[Hue](https://www.store.meethue.com/) starter kit with hub and two white bulbs - $70
+[Hue](https://www.store.meethue.com/) starter kit with hub and two white bulbs - $70  
 
-Adding door/window sensors, motion detectors, fire alarms, water leak detectors, etc. requires investment in either Zigbee or Z-Wave
+[Osram Lightify](https://www.osram.com/cb/lightify/index.jsp) - Hub $30, White bulb $12  
 
-A cheap, popular, Zigbee based starter kit is the [Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) for $60 which includes a zigbee hub, two door/window sensors, and a push button.  
+Adding door/window sensors, motion detectors, fire alarms, water leak detectors, etc. requires investment in either Zigbee or Z-Wave.
+
+A cheap, popular, Zigbee based starter kit is the [Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) for $60 which includes a Zigbee hub, two door/window sensors, and a push button. The trade-off is that it's meant to be for Chinese use only. This means the kit is shipped from China, you must purchase a power adapter, and run through the setup process in Chinese. Having done this myself it's actually pretty simple.
+ 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="200">
 
 
@@ -727,7 +765,11 @@ Flash the Sonoff with [Tasmota](https://github.com/arendst/Sonoff-Tasmota) or [E
 These firmware provide OTA updates and MQTT support.
 
 There is a large ecosystem of Z-Wave enabled devices and sensors, and some sensors may only be available in Z-Wave versions. To proceed with Z-Wave you need a Z-Wave hub and the Aeotec Z-Stick (Z-Wave plus version) is a popular option for the Raspberry Pi.
-
   
 [Aeotec Z-Stick Gen5](https://www.amazon.com/Aeotec-Z-Stick-Z-Wave-create-gateway/dp/B00X0AWA6E/) - $45  
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/aeotec.jpg" height="200">
+
+<br>
+<p align="center" style = "font-size: 30pt">
+Happy Automating!
+</p>
