@@ -1,17 +1,18 @@
 <p align="center">
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_logo.jpeg" width="200">
+<img src="https://github.com/home-assistant/home-assistant-assets/raw/master/loading-screen.gif" width="200">
 </p>
 
 **Home Assistant** is an open-source home automation platform written in Python ([Github](https://github.com/home-assistant/home-assistant)) on the backend, and [Polymer](https://www.polymer-project.org/) on the frontend. When combined with hardware it makes an open hub for managing the state of home automation devices and triggering automations.
 
 [Documentation](https://home-assistant.io/docs/)  
-[Installation options](https://home-assistant.io/docs/installation/)  
+[Installation](https://home-assistant.io/docs/installation/)  
 [Components](https://home-assistant.io/components/)  
 [Demo](https://home-assistant.io/demo/)
 
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_full.png" width="600">
+
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_mobile.png" width="600">
 
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_full.png" width="600">
 
 #### HA advantages:
 
@@ -19,11 +20,11 @@
 * Number of integrations approaching 1,000
 * Runs on Raspberry Pi, Synology NAS, or any computer running python
 * Not dependent on cloud services (most components), all data stored locally in sqllite DB
-* Ability to use almost any hardware, [doesn't rely on vendor support](https://news.ycombinator.com/item?id=15989302)
+* Ability to use disparate hardware
 * Can work in conjunction with hubs from other manufacturers. Add HA in front of Smartthings
 * Integrates with Amazon Echo, Google Assistant, and HomeKit for voice
-* Helpful community - active [Discord](https://discord.gg/c5DvZ4e) channel and [forum](https://community.home-assistant.io/)
-* Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through [mobile web interface](https://home-assistant.io/docs/frontend/mobile/)  
+* Helpful community - active [Discord](https://discord.gg/c5DvZ4e) channel and [Forum](https://community.home-assistant.io/)
+* Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through a responsive [web interface](https://home-assistant.io/docs/frontend/mobile/)  
 
 <br>
 
@@ -38,6 +39,14 @@ implications.
 [Internet of Things: Pinning down the IoT](https://fsecureconsumer.files.wordpress.com/2018/01/f-secure_pinning-down-the-iot_final.pdf)
 
 <br>
+
+>Blink disables support for Smartthings in preparation for sale to Amazon  
+[Hacker News](https://news.ycombinator.com/item?id=15989302)
+
+<br>
+
+>Overall, my takeaway is that the smart home is going to create a new stream of information about our daily lives that will be used to further profile and target us. The number of devices alone that are detected chattering away will be used to determine our socioeconomic status. Our homes could become like internet browsers, with unique digital fingerprints, that will be mined for profit just like our daily Web surfing is. If you have a smart home, it’s open house on your data.  
+[The House that Spied on Me](https://gizmodo.com/the-house-that-spied-on-me-1822429852)
 
 #### Competitors:
 
@@ -75,7 +84,7 @@ Good for transmitting one way - doorbells, fans, weather stations
 Sonoff switches
 
 #### Wifi devices
-Easiest to configure 
+Easiest to configure   
 Consumes a lot of power relative to other protocols
 
 #### IR devices
@@ -90,7 +99,7 @@ Good up to 10m
 
 Installation of Home Assistant on a Raspberry Pi is accomplished by flashing the micro SD card with a downloaded image.
 
-After initial boot an installer will download the latest HA build and run in the background. It takes around 15 minutes to complete, and afterwards the Home Assistant interface will be available at ```http://<RasPI IP>:8123```
+After initial boot an installer will download the latest HA build and run in the background. It takes around 15 minutes to complete, and afterwards the Home Assistant interface will be available at ```http://<RasPI_IP>:8123```
 
 ### [Hassbian](https://home-assistant.io/docs/installation/hassbian/)
 Install HomeAssistant core on a full Debian OS. No add-on packages available natively, but includes a tool called [hassbian-config](https://home-assistant.io/docs/installation/hassbian/customization/) to aid with the installation of some common packages.
@@ -119,7 +128,7 @@ HomeAssistant running in a Docker container on ResinOS
 ## Home Assistant Basics
 Home Assistant organizes all the components that comprise your home automation network. This includes information pulled from the Internet (weather forecast, traffic cam image, bitcoin price), the state of a switch or light (on/off), presence detection (home/away), and more.  
 
-For each component that you want to use in Home Assistant, you add code in your ```configuration.yaml``` file to specify its settings.
+For each [component](https://home-assistant.io/components/) that you want to use in Home Assistant, you add code in your ```configuration.yaml``` file to specify its settings.
 
 The configuration file is written in YAML. [YAML](https://home-assistant.io/docs/configuration/yaml/) is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation.
 
@@ -158,7 +167,7 @@ and displayed on the frontend for easy viewing.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_weather.png" width="300">
 
-Additional sensors can be added by defining the component in your ```configuration.yaml``` file. The bitcoin price sensor can be added with the following:
+Additional sensors can be added by defining the new component in your ```configuration.yaml``` file. The bitcoin price sensor can be added with the following:
 
  
 ```yaml
@@ -178,7 +187,7 @@ Automations in Home Assistant are defined as trigger, condition, action.
 
 ```
 (trigger)    When I arrive home
-(condition)  and it is after sunset:
+(condition)  and it is after sunset
 (action)     Turn the lights in the living room on
 ```
 With trigger and action being mandatory and condition being optional.
@@ -203,7 +212,7 @@ An example automation to turn on a porch light at sunset.
 Send me a text message (using the twilio component) if the water detector by my hot water tank registers water.
 
 ```
-- id: '1102'
+- id: '0002'
   alias: 'Notify of water heater leak'
   hide_entity: true
   trigger:
@@ -221,7 +230,7 @@ Send me a text message (using the twilio component) if the water detector by my 
 My security alarm. If my hall motion detector registers motion, and nobody is home, and I have security enabled, then send me a text.
 
 ```
-- id: '1103'
+- id: '0003'
   alias: 'Security - Motion detected'
   hide_entity: true
   trigger:
@@ -266,7 +275,7 @@ I define different ```input_boolean``` and use them as conditionals to ensure my
 
 If the action you wish your automation to perform is simple, like turning on a light, then you can call the service ```light.turn_on``` directly and pass the ```entity_id```. If, however, you wish to trigger a more complex action then it may be necessary for your action to call ```script.turn_on``` or ```scene.turn_on``` with the ```entity_id``` being the name of the script or scene to execute.
 
-[Scripts](https://home-assistant.io/docs/scripts/) are a sequence of actions that Home Assistant will execute. 
+***[Scripts](https://home-assistant.io/docs/scripts/)*** are a sequence of actions that Home Assistant will execute. 
 
 ```yaml
 script:
@@ -281,7 +290,7 @@ script:
           message: 'Lights are on!'
 ```
 
-[Scenes](https://home-assistant.io/components/scene/) capture the states you want certain entities to be.
+***[Scenes](https://home-assistant.io/components/scene/)*** capture the states you want certain entities to be.
 
 ```yaml
 scene:
@@ -304,7 +313,7 @@ scene:
 
 ### Additional Config
 
-[Splitting up the configuration](https://home-assistant.io/docs/configuration/splitting_configuration/)
+***[Splitting up the configuration](https://home-assistant.io/docs/configuration/splitting_configuration/)***
 
 ```
 group: !include groups.yaml
@@ -314,7 +323,9 @@ input_boolean: !include input_boolean.yaml
 script: !include scripts.yaml
 ```
  
-Grouping devices
+***Grouping devices***  
+
+Devices can be members of multiple groups. Some groups will be used to display devices together on the frontend. Other groups can be hidden (so they're not displayed on the frontend) and called within automations and scripts.   
 
 ```
   Lights:
@@ -335,7 +346,9 @@ Grouping devices
     - light.bedroom
     - light.hallupper
 ``` 
-Customizing - rename entities, don't display entities, add [MDI](https://materialdesignicons.com/) icons  
+***[Customizing](https://home-assistant.io/docs/configuration/customizing-devices/)***
+
+Rename entities, hide entities, add [icons](https://materialdesignicons.com/) and more.   
 
 ```
 sensor.dark_sky_summary:
@@ -360,7 +373,9 @@ binary_sensor.ecolink_motion_sensor_sensor:
 ```
 
 
-By integrating [device tracking](https://home-assistant.io/components/device_tracker/), Home Assistant can trigger automations based on your location and show your location on its map.
+***[Device Tracking](https://home-assistant.io/components/device_tracker/)***
+
+Home Assistant can trigger automations based on your location and show your location on its map.
 
 Location tracking can be done in many different ways:
 
@@ -368,7 +383,7 @@ Location tracking can be done in many different ways:
 * iCloud
 * Owntracks
 * NMap scan
-* Many Others
+* Many others
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_map.png" width="600">
 
@@ -377,12 +392,14 @@ You can also define zones such that events will fire when you enter or leave the
 Define a zone like so:
 
 ```yaml
-  - name: Work
-    latitude: 40.450242
-    longitude: -79.951144
+  - name: Code_and_Supply
+    latitude: 40.46001
+    longitude: -79.93072
     radius: 150
-    icon: mdi:desktop-mac
+    icon: mdi:desktop-classic
 ```
+
+You even have the option of triggering events based on the direction of travel with the [proximity](https://home-assistant.io/components/proximity/) component.
 
 ## [Add-ons](https://home-assistant.io/addons/)
 
@@ -390,9 +407,9 @@ Define a zone like so:
 ### SSH, Samba, Git
 Add-ons for updating configurations:
 
-* Samba - Manage Home Assistant files exposed over an SMB share
-* Git - Load and update configuration files for Home Assistant from a Git repository
-* SSH - Enables easy ssh access for controlling the host
+* ***Samba*** - Manage Home Assistant files exposed over an SMB share
+* ***Git*** - Load and update configuration files for Home Assistant from a Git repository
+* ***SSH*** - Enables easy ssh access for controlling the host
   * [hass](https://home-assistant.io/docs/tools/hass/) - command line control over Home Assistant (reload, start/stop services)
   * Can also control through GUI
 
@@ -431,7 +448,7 @@ The ability to access your frontend through an onion address on the TOR network.
 Additional security automations.
 
 ```yaml
-- id: '2076'
+- id: '0005'
   alias: 'Security - Sliding Door opened while in bed'
   hide_entity: true
   trigger:
@@ -482,7 +499,7 @@ Amazon Dash buttons can be good, cheap, battery powered buttons.  You need to be
 Only one of the following automations will kick off depending on the time of day I press the button.
 
 ```yaml
-- id: '1201'
+- id: '0006'
   alias: 'Bedroom Dash Button - Good Morning'
   hide_entity: true
   trigger:
@@ -557,7 +574,7 @@ There exists an [HA component](https://home-assistant.io/components/thethingsnet
 Early on Home Assistant introduced templating which allows variables in scripts and automations. This makes it possible to adjust your condition and action based on the information of the trigger.
 
 ```yaml
-- id: '2001'
+- id: '0007'
   alias: 'Speak temperature'
   hide_entity: true
   trigger:
