@@ -586,7 +586,7 @@ scene.good_morning:
 
 ESP8266, Arduino based devices, and many others can communicate via MQTT  
 
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/WemosD1.jpg" width="200">
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/wemosD1.jpg" width="200">
 
 There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LoRaWAN. LoRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and allow querying of these sensors world-wide.
 
