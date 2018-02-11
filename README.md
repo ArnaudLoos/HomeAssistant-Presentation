@@ -19,12 +19,12 @@
 * Speed of development - updates generally released bi-weekly
 * Number of integrations approaching 1,000
 * Runs on Raspberry Pi, Synology NAS, or any computer running python
-* Not dependent on cloud services (most components), all data stored locally in sqllite DB
+* Not dependent on cloud services (many components), all data stored locally in sqllite DB
 * Ability to use disparate hardware
 * Can work in conjunction with hubs from other manufacturers. Add HA in front of Smartthings
 * Integrates with Amazon Echo, Google Assistant, and HomeKit for voice
 * Helpful community - active [Discord](https://discord.gg/c5DvZ4e) channel and [Forum](https://community.home-assistant.io/)
-* Has an [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through a responsive [web interface](https://home-assistant.io/docs/frontend/mobile/)  
+* [iOS app](https://home-assistant.io/docs/ecosystem/ios/), or easily accessible through a responsive [web interface](https://home-assistant.io/docs/frontend/mobile/)  
 
 <br>
 
@@ -81,7 +81,7 @@ Generally cheaper than Z-Wave
 
 #### 433MHz or 315MHz RF 
 Good for transmitting one way - doorbells, fans, weather stations  
-Sonoff switches  
+Sonoff switches are available in RF versions  
 [Broadlink RM Pro](http://www.ibroadlink.com/rm/) - controller
 
 #### Wifi devices
@@ -100,12 +100,14 @@ Good up to 10m
 
 Installation of Home Assistant on a Raspberry Pi is accomplished by flashing the micro SD card with a downloaded image.
 
-After initial boot an installer will download the latest HA build and run in the background. It takes around 15 minutes to complete, and afterwards the Home Assistant interface will be available at ```http://<RasPI_IP>:8123```
+***After first boot an installer will download the latest HA build and install in the background.*** 
+
+Home Assistant is not installed by flashing the SD card. On first boot make sure your device has an active Internet connection otherwise the download and installation of HA will fail. Either plug in an ethernet cable or configure wireless settings before booting. It takes around 15 minutes to complete the installation, and afterwards the Home Assistant interface will be available at ```http://<RasPI_IP>:8123```
 
 ### [Hassbian](https://home-assistant.io/docs/installation/hassbian/)
 Install HomeAssistant core on a full Debian OS. No add-on packages available natively, but includes a tool called [hassbian-config](https://home-assistant.io/docs/installation/hassbian/customization/) to aid with the installation of some common packages.
 
-Has the benefit and/or drawback of running a full OS.
+Has the benefit and/or drawback of running a full OS. This is beneficial if you want to run additional programs on the machine which are not integrated into the HA ecosystem.
 
 Upgrades are accomplished through a pip3 package update.
 
@@ -129,9 +131,9 @@ HomeAssistant running in a Docker container on ResinOS
 ## Home Assistant Basics
 Home Assistant organizes all the components that comprise your home automation network. This includes information pulled from the Internet (weather forecast, traffic cam image, bitcoin price), the state of a switch or light (on/off), presence detection (home/away), and more.  
 
-For each [component](https://home-assistant.io/components/) that you want to use in Home Assistant, you add code in your ```configuration.yaml``` file to specify its settings.
+For each [component](https://home-assistant.io/components/) that you want to use in Home Assistant, you add code to your ```configuration.yaml``` file and specify its settings.
 
-The configuration file is written in YAML. [YAML](https://home-assistant.io/docs/configuration/yaml/) is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation.
+The configuration file is written in [YAML](https://home-assistant.io/docs/configuration/yaml/). YAML is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation.
 
 It is possible to edit YAML files from within Home Assistant using the [HASS Configuration UI](https://home-assistant.io/docs/ecosystem/hass-configurator/)
 
@@ -174,17 +176,19 @@ Additional sensors can be added by defining the new component in your ```configu
 
  
 ```yaml
-sensor:
   - platform: bitcoin
     display_options:
       - market_price_usd
 ```
 
-Adding a switch component like a power plug or light will automatically cause an entity with a toggle switch to be defined in the frontend allowing you to turn the switch on or off manually.
+Adding a switch component like a power plug or light will automatically cause an entity with a toggle switch to be defined in the frontend, allowing you to turn the switch on or off manually.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_lights.png" width="300">
 
+<br>
+
 ### The power of home automation however comes from the automations!  
+
 
 Automations in Home Assistant are defined as trigger, condition, action.  
 
@@ -198,6 +202,7 @@ With trigger and action being mandatory and condition being optional.
 A trigger will look at events happening in the system while a condition only looks at how the system looks right now. A trigger can observe that a switch is being turned on. A condition can only see if a switch is currently on or off.
 
 An example automation to turn on a porch light at sunset.  
+The ```id``` attribute is necessary only if you manage automations from within Home Assistant using the [Automation Editor](https://home-assistant.io/docs/automation/editor/), which I don't recommend.  
 
 ```yaml
 - id: '0001'
@@ -314,7 +319,7 @@ scene:
         source: HDMI 1
 ```
 
-An add-on project named [scenegen](https://home-assistant.io/docs/ecosystem/scenegen/) can be used to create scenes by example, by reading the current states of devices and outputting a corresponding scene.
+An add-on project named [scenegen](https://home-assistant.io/docs/ecosystem/scenegen/) can be used to create scenes by reading the current states of devices and outputting a corresponding scene.
 
 ### Additional Config
 
@@ -353,7 +358,7 @@ Devices can be members of multiple groups. Some groups will be used to display d
 ``` 
 ***[Customizing](https://home-assistant.io/docs/configuration/customizing-devices/)***
 
-Rename entities, hide entities, add [icons](https://materialdesignicons.com/) and more.   
+Rename entities, hide entities, add [icons](https://materialdesignicons.com/), and more.   
 
 ```
 sensor.dark_sky_summary:
@@ -382,7 +387,7 @@ binary_sensor.ecolink_motion_sensor_sensor:
 
 Home Assistant can trigger automations based on your location and show your location on its map.
 
-Location tracking can be done in many different ways:
+Location tracking can be done in many different ways, with varying precision:
 
 * iOS App
 * iCloud
@@ -390,7 +395,7 @@ Location tracking can be done in many different ways:
 * NMap scan
 * Many others
 
-<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_map.png" width="600">
+Once the first device is discovered HA will create a file named ```known_devices.yaml``` where it will track all the devices it knows about. If you want to rename a device, add a picture, or stop tracking a device, make the change in this file. For each tracked device HA will create a ```device_tracker.user_name``` entity which can be displayed on the frontend.
 
 You can also define zones such that events will trigger when you enter or leave the zone.
 
@@ -403,6 +408,8 @@ Define a zone like so:
     radius: 150
     icon: mdi:desktop-classic
 ```
+
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/frontend_map.png" width="600">
 
 You even have the option of triggering events based on the direction of travel with the [proximity](https://home-assistant.io/components/proximity/) component. You can have the thermostat raise the temperature as you approach home.
 
@@ -437,14 +444,14 @@ Enables a local MQTT broker.
 Network devices can either publish simple information to an MQTT topic or subscribe to a topic to consume the data published there by another device.  
 The main advantage of MQTT is that it is a common protocol in the IoT space and allows easy sharing of information across devices that would otherwise be unable to communicate with each other.  
 
-Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over WiFi. But how do we  get these values into Home Assistant? MQTT. There are MQTT libraries available for many platforms, including Arduino. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance, if I place my new sensor in my bedroom I can tell it to publish to the ```home/temp/bedroom/master/``` topic or if I wish to organize it differently I could instead publish to ```/home/upstairs/bedroom/temp/```.  
+Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over WiFi. But how do we  get these values into Home Assistant? MQTT. There are MQTT libraries available for many platforms, including Arduino. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance, if I place my new sensor in my bedroom I can tell it to publish to the ```home/temp/bedroom/master/``` topic or if I wish to organize it differently I could instead publish to ```/home/bedroom/master/temp/```.  
 
-Then, after I define the MQTT component in my configuration, I define a sensor to read that particular value.
+Then, after I add the MQTT component to my configuration, I define a sensor to read that particular value.
 
 ```yaml
   - platform: mqtt 
     name: "Bedroom Temp"
-    state_topic: "home/upstairs/bedroom/temp"
+    state_topic: "home/bedroom/master/temp"
     unit_of_measurement: "ºF"
 ```
 And now inside Home Assistant I have a component named `sensor.bedroom_temp` with a value being updated as the MQTT topic gets updated.
@@ -579,6 +586,8 @@ scene.good_morning:
 
 ESP8266, Arduino based devices, and many others can communicate via MQTT  
 
+<img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/WemosD1.jpg" width="200">
+
 There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LoRaWAN. LoRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and allow querying of these sensors world-wide.
 
 * [Python API](https://dev-docs.home-assistant.io/en/dev/)
@@ -590,7 +599,7 @@ There exists an [HA component](https://home-assistant.io/components/thethingsnet
 ## Advanced Config
 ***[Templating](https://home-assistant.io/docs/configuration/templating/)*** 
 
-Early on Home Assistant introduced templating which allows variables in scripts and automations. This makes it possible to adjust your condition and action based on the information of the trigger.
+Early on Home Assistant introduced templating which allows variables in scripts and automations. This makes it possible to create conditions or actions based on variables.
 
 ```yaml
 - id: '0008'
@@ -802,6 +811,6 @@ There is a large ecosystem of Z-Wave enabled devices and sensors, and some senso
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/aeotec.jpg" height="200">
 
 <br>
-<p align="center" style = "font-size: 30pt">
+<p align="center" style="font-size: 30pt">
 Happy Automating!
 </p>
