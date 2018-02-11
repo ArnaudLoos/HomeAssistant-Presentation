@@ -406,6 +406,8 @@ Define a zone like so:
 
 You even have the option of triggering events based on the direction of travel with the [proximity](https://home-assistant.io/components/proximity/) component. You can have the thermostat raise the temperature as you approach home.
 
+For more precise location detection Owntracks supports the use of iBeacons. You can [turn your Raspberry Pi into an iBeacon](https://andrewmemory.wordpress.com/2016/03/29/turning-a-raspberry-pi-3-into-an-ibeacon/) with a large radius to trigger automations reliably when arriving in your home zone, or place iBeacons in each room of your house to trigger presence based actions at the room level.
+
 ## [Add-ons](https://home-assistant.io/addons/)
 
 
@@ -609,6 +611,32 @@ Early on Home Assistant introduced templating which allows variables in scripts 
     entity_id: input_boolean.daily_update
 ```
 
+Templating can be a great way to ensure the robustness and accuracy of your automations. For example, if you rely heavily on presence detection to trigger automations it can be problematic if your phone GPS glitches and places you 200m away from your actual location for a brief period of time. Now your "Away from home" automations kick-off and the lights turn off.  
+In this case you can track your presence using multiple sensors (Owntracks, nmap scan, iCloud) and use a template to define the state of a new ```input_boolean```. The template reads the state of all 3 device trackers and if 2 out of 3 report you as home then you set the state of ```input_boolean.User_home``` to ```ON```. Now use this component in your automations instead of the individual device trackers.
+
+An example of a more complex template:  
+
+```
+  - platform: template
+    sensors:
+      status_smoke_co_alarm:
+        value_template: '{%- if is_state("sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_level", "0") %}
+                        Idle
+                        {%else%}
+                          {%- if is_state("sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_type", "1") %}
+                          Fire
+                          {%- elif is_state("sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_type", "2") %}
+                          CO
+                          {%- elif is_state("sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_type", "12") %}
+                          Testing
+                          {%- elif is_state("sensor.first_alert_zcombo_smoke_and_carbon_monoxide_detector_alarm_type", "13") %}
+                          Idle
+                          {% else %}
+                          Unknown
+                          {%- endif %}
+                        {%endif%}'
+        friendly_name: 'Smoke/CO Alarm'
+```
 
 ***[Themes](https://community.home-assistant.io/c/projects/themes)***  
 
