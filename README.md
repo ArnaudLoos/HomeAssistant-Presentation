@@ -51,7 +51,7 @@ implications.
 
 * Samsung Smartthings
 * Wink 2
-* Apple Homekit
+* Apple Homepod
 * Belkin Wemo
 * Amazon Echo
 * Google Home
@@ -102,7 +102,7 @@ Installation of Home Assistant on a Raspberry Pi is accomplished by flashing the
 
 ***After first boot an installer will download the latest HA build and install in the background.*** 
 
-Home Assistant is not installed by flashing the SD card. On first boot make sure your device has an active Internet connection otherwise the download and installation of HA will fail. Either plug in an ethernet cable or configure wireless settings before booting. It takes around 15 minutes to complete the installation, and afterwards the Home Assistant interface will be available at ```http://<RasPI_IP>:8123```
+Home Assistant ***is not*** installed by flashing the SD card. On first boot make sure your device has an active Internet connection otherwise the download and installation of HA will fail. Either plug in an ethernet cable or configure wireless settings before booting. It takes around 15 minutes to complete the installation, and afterwards the Home Assistant interface will be available at ```http://<RasPI_IP>:8123```
 
 ### [Hassbian](https://home-assistant.io/docs/installation/hassbian/)
 Install HomeAssistant core on a full Debian OS. No add-on packages available natively, but includes a tool called [hassbian-config](https://home-assistant.io/docs/installation/hassbian/customization/) to aid with the installation of some common packages.
@@ -131,21 +131,42 @@ HomeAssistant running in a Docker container on ResinOS
 ## Home Assistant Basics
 Home Assistant organizes all the components that comprise your home automation network. This includes information pulled from the Internet (weather forecast, traffic cam image, bitcoin price), the state of a switch or light (on/off), presence detection (home/away), and more.  
 
-For each [component](https://home-assistant.io/components/) that you want to use in Home Assistant, you add code to your ```configuration.yaml``` file and specify its settings.
+For each [component](https://home-assistant.io/components/) that you want to use in Home Assistant, you add an entry to your ```configuration.yaml``` file and specify its settings.
 
-The configuration file is written in [YAML](https://home-assistant.io/docs/configuration/yaml/). YAML is a markup language that utilizes block collections of key:value pairs. YAML is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation.
+The configuration file is written in [YAML](https://home-assistant.io/docs/configuration/yaml/). YAML is a markup language that utilizes block collections of key:value pairs. It is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation.
 
 It is possible to edit YAML files from within Home Assistant using the [HASS Configuration UI](https://home-assistant.io/docs/ecosystem/hass-configurator/)
 
 
 ```yaml
 homeassistant:
-  name: Burgh
+  name: Pittsburgh
   unit_system: imperial
   time_zone: America/New_York
   latitude: !secret latitude
   longitude: !secret longitude
   elevation: 330
+
+frontend:
+logbook:
+  exclude:
+    entities:
+      - sensor.dark_sky_summary
+      - sensor.dark_sky_daily_high_temperature
+      - sensor.dark_sky_daily_low_temperature
+discovery:
+updater:
+sun:
+map:
+config:
+history:
+recorder:
+  purge_interval: 2
+  purge_keep_days: 7
+logger:
+  default: warning
+http:
+  api_password: my_password
 
 light:
   - platform: osramlightify
@@ -215,7 +236,7 @@ The ```id``` attribute is necessary only if you manage automations from within H
     to: below_horizon
   action:
   - service: light.turn_on
-    entity_id: light.front_door
+    entity_id: light.front_porch
 ```
 Send me a text message (using the twilio component) if the water detector by my hot water tank registers water.
 
@@ -256,9 +277,9 @@ My security alarm. If my hall motion detector registers motion, and nobody is ho
   action:
     service: notify.twilio
     data:
-      message: 'Movement detected at home!'
+      message: 'Movement detected!'
       target:
-        - +14122943661
+        - +1412xxxxxxx
 ```
 
 In the above example I check the state of an ```input_boolean``` named ```enable_security``` and only execute the action if the state is ```ON```
@@ -319,11 +340,13 @@ scene:
         source: HDMI 1
 ```
 
-An add-on project named [scenegen](https://home-assistant.io/docs/ecosystem/scenegen/) can be used to create scenes by reading the current states of devices and outputting a corresponding scene.
+An add-on project named [scenegen](https://home-assistant.io/docs/ecosystem/scenegen/) can be used to create scenes by reading the current state of devices and outputting a corresponding scene.
 
 ### Additional Config
 
 ***[Splitting up the configuration](https://home-assistant.io/docs/configuration/splitting_configuration/)***
+
+You can move sections of your ```configuration.yaml``` to separate files and  import them like so:
 
 ```
 group: !include groups.yaml
@@ -349,10 +372,10 @@ Devices can be members of multiple groups. Some groups will be used to display d
     - light.hallupper
     - light.living_room
     - light.bedroom
-  Downstairs:
+  Downstairs_Lights:
     - light.halllower
     - light.living_room
-  Upstairs:
+  Upstairs_Lights:
     - light.bedroom
     - light.hallupper
 ``` 
@@ -395,7 +418,7 @@ Location tracking can be done in many different ways, with varying precision:
 * NMap scan
 * Many others
 
-Once the first device is discovered HA will create a file named ```known_devices.yaml``` where it will track all the devices it knows about. If you want to rename a device, add a picture, or stop tracking a device, make the change in this file. For each tracked device HA will create a ```device_tracker.user_name``` entity which can be displayed on the frontend.
+Once the first device is discovered HA will create a file named ```known_devices.yaml``` where it will track all the devices it knows about. If you want to rename a device, add a picture, or stop tracking a device, make the change in this file. For each tracked device HA will create a ```device_tracker.device_name``` entity which can be displayed on the frontend.
 
 You can also define zones such that events will trigger when you enter or leave the zone.
 
@@ -424,7 +447,8 @@ Add-ons for updating configurations:
 * ***Samba*** - Manage Home Assistant files exposed over an SMB share
 * ***Git*** - Load and update configuration files for Home Assistant from a Git repository
 * ***SSH*** - Enables easy ssh access for controlling the host
-  * [hass](https://home-assistant.io/docs/tools/hass/) - command line control over Home Assistant (reload, start/stop services)
+  * [hass](https://home-assistant.io/docs/tools/hass/) - command line control over Hass.io (reload, start/stop services)
+  * [hassctl](https://github.com/dale3h/hassctl) add-on for controlling hassbian
   * Can also control through GUI
 
 ### Duck DNS
@@ -432,7 +456,7 @@ Dynamic DNS to access Home Assistant on the Internet.
 
 ***Secure your installation if it is publicly exposed!***
 
-Consider not publicly exposing your Home Assistant installation to the world and instead keeping it secure inside your network. Various access methods such as OpenVPN, [TOR](https://home-assistant.io/docs/ecosystem/tor/), or [ZeroTier](https://www.zerotier.com/) exist which allow for more secure access. Setup instructions for ZeroTier can be found [here](https://iamkelv.in/blog/2017/06/zerotier.html).
+Consider not publicly exposing your Home Assistant installation to the world and instead keeping it secure inside your network. Various access methods such as OpenVPN, [TOR](https://home-assistant.io/docs/ecosystem/tor/), or [ZeroTier](https://www.zerotier.com/) exist which allow for more secure access. Setup instructions for ZeroTier on Raspberry Pi can be found [here](https://iamkelv.in/blog/2017/06/zerotier.html).
 
 ### Let's Encrypt
 Easily and automatically add a free SSL certificate
@@ -444,7 +468,7 @@ Enables a local MQTT broker.
 Network devices can either publish simple information to an MQTT topic or subscribe to a topic to consume the data published there by another device.  
 The main advantage of MQTT is that it is a common protocol in the IoT space and allows easy sharing of information across devices that would otherwise be unable to communicate with each other.  
 
-Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over WiFi. But how do we  get these values into Home Assistant? MQTT. There are MQTT libraries available for many platforms, including Arduino. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance, if I place my new sensor in my bedroom I can tell it to publish to the ```home/temp/bedroom/master/``` topic or if I wish to organize it differently I could instead publish to ```/home/bedroom/master/temp/```.  
+Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over Wi-Fi. But how do we  get these values into Home Assistant? MQTT. There are MQTT libraries available for many platforms, including Arduino. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance, if I place my new sensor in my bedroom I can tell it to publish to the ```home/temp/bedroom/master/``` topic or if I wish to organize it differently I could instead publish to ```/home/bedroom/master/temp/```.  
 
 Then, after I add the MQTT component to my configuration, I define a sensor to read that particular value.
 
@@ -496,13 +520,13 @@ sound_the_alarm:
       entity_id: group.inside_lights
     - service: notify.twilio
       data:
-        message: "Alarm activated!! Someone's in the house!!"
+        message: "Alarm activated!!"
         target:
           - +1412xxxxxxx
     - service: tts.google_say
       entity_id: media_player.chromecast
       data:
-        message: "Alarm  alarm  alarm  alarm  alarm  alarm"
+        message: "Alarm alarm alarm alarm alarm alarm"
 ```
 
 [Dasher](https://github.com/maddox/dasher) is a simple way to bridge your Amazon Dash buttons to HTTP services. It is a Node application that listens on the network for Amazon Dash button presses and sends a post command to the Home Assistant REST API. I have one by my bed that I press when I get up in the morning and when I go to bed at night.
@@ -588,7 +612,9 @@ ESP8266, Arduino based devices, and many others can communicate via MQTT
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/wemosD1.jpg" width="200">
 
-There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LoRaWAN. LoRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and allow querying of these sensors world-wide.
+There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LoRaWAN. LoRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and allow querying of these sensors world-wide. Home Assistant could, for example, read from all the LoRaWAN sensors connected to a private hub monitoring a 30 acre farm.
+
+And APIs to integrate with everything.
 
 * [Python API](https://dev-docs.home-assistant.io/en/dev/)
 * [Websocket API](https://home-assistant.io/developers/websocket_api/)
@@ -621,7 +647,7 @@ Early on Home Assistant introduced templating which allows variables in scripts 
 ```
 
 Templating can be a great way to ensure the robustness and accuracy of your automations. For example, if you rely heavily on presence detection to trigger automations it can be problematic if your phone GPS glitches and places you 200m away from your actual location for a brief period of time. Now your "Away from home" automations kick-off and the lights turn off.  
-In this case you can track your presence using multiple sensors (Owntracks, nmap scan, iCloud) and use a template to define the state of a new ```input_boolean```. The template reads the state of all 3 device trackers and if 2 out of 3 report you as home then you set the state of ```input_boolean.User_home``` to ```ON```. Now use this component in your automations instead of the individual device trackers.
+In this case you can track your presence using multiple sensors (Owntracks, nmap scan, iCloud) and use a template to define the state of a new ```input_boolean```. The template reads the state of all 3 device trackers and only if 2 out of 3 report you as not_home does it set the state of ```input_boolean.User_home``` to ```OFF```. Now use this component in your automations instead of the individual device trackers.
 
 An example of a more complex template:  
 
@@ -742,7 +768,7 @@ class Commute(appapi.AppDaemon):
             message = "Current travel time from work to home is {} minutes".format(commute)
             self.log(message)
             self.call_service("notify/twilio", title="Commute Warning", message = message, target="+1412xxxxxxx")
-        elif (currentLocation == 'home') or (currentLocation == 'girlfriend'):
+        elif currentLocation == 'home':
             message = "Current travel time from home to work is {} minutes".format(commute)
             self.log(message)
             self.call_service("notify/twilio", title="Commute Warning", message = message, target="+1412xxxxxxx")
@@ -758,7 +784,7 @@ HA Dashboard is a modular, skinnable dashboard for Home Assistant that is intend
 
 
 #### [Floorplan](https://community.home-assistant.io/c/third-party/floorplan)
-Floorplan is a custom integration which allows you to show a floorplan of your home and overlay device control over top.
+Floorplan is a custom integration which allows you to show a floorplan of your home and overlay device control over top. It is very customizable.
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/floorplan1.jpg" width="500">
 
@@ -779,9 +805,9 @@ Node Red is a visual workflow development tool, allowing the creation of complex
 [Part 3](http://diyfuturism.com/index.php/2018/01/18/going-further-with-home-automations-in-node-red/)  
 
 ## Recommendations for starting out
-Hass.io running on a Raspberry Pi 3 - $50 with power and case  
+Hass.io running on a Raspberry Pi 3 - $50 with power and case.  
 
-Many people start with automating lights. Many lights are either wifi controlled or come with their own hub with a proprietary zigbee radio inside.
+Many people start with automating lights. Many lights are either wifi controlled or come with their own hub with a proprietary zigbee radio inside. You also should decide if you want white-only bulbs or color. I've found I prefer white bulbs that can display a range of white from cool to warm. I find the white color projected from color bulbs to be unpleasant. Color LED strips work well for adding a splash of color and effects.
 
 [Yeelight](https://www.amazon.com/YEELIGHT-YLDP03YL-Dimmable-Equivalent-Assistant/dp/B01LRTWQJ0/) Wi-Fi color bulb - $35
 
@@ -793,7 +819,7 @@ Many people start with automating lights. Many lights are either wifi controlled
 
 Adding door/window sensors, motion detectors, fire alarms, water leak detectors, etc. requires investment in either Zigbee or Z-Wave.
 
-A cheap, popular, Zigbee based starter kit is the [Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) for $60 which includes a Zigbee hub, two door/window sensors, and a push button. The trade-off is that it's meant to be for Chinese use only. This means the kit is shipped from China, you must purchase a power adapter, and run through the setup process in Chinese. Having done this myself it's actually pretty simple.
+A cheap, popular, Zigbee based starter kit is the [Xiaomi Security Kit](https://www.gearbest.com/alarm-systems/pp_659225.html) for $60 which includes a Zigbee hub, two door/window sensors, and a push button. The trade-off is that it's meant for Chinese use only. This means the kit is shipped from China, you must purchase a power adapter, and run through the setup process in Chinese. Having done this myself it's actually pretty simple.
  
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="200">
 
