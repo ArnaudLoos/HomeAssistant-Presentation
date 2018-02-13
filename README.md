@@ -470,7 +470,19 @@ The main advantage of MQTT is that it is a common protocol in the IoT space and 
 
 Example: I can build a simple [temperature and humidity sensor](https://home-assistant.io/blog/2015/10/11/measure-temperature-with-esp8266-and-report-to-mqtt/) utilizing cheap microcontrollers like an [ESP8266](https://www.sparkfun.com/products/13678) or a [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini). These controllers will read the temperature from an attached sensor and have the ability to communicate over Wi-Fi. But how do we  get these values into Home Assistant? MQTT. There are MQTT libraries available for many platforms, including Arduino. You configure your sensor with the IP of your MQTT broker as well as the topic you wish to publish to. Topics and sub-topics can be created on the fly. So for instance, if I place my new sensor in my bedroom I can tell it to publish to the ```home/temp/bedroom/master/``` topic or if I wish to organize it differently I could instead publish to ```/home/bedroom/master/temp/```.  
 
-Then, after I add the MQTT component to my configuration, I define a sensor to read that particular value.
+Then, after I add the MQTT component to my configuration, 
+
+```
+mqtt:
+  broker: 127.0.0.1
+  port: 1883
+  client_id: home-assistant-1
+  keepalive: 60
+  username: !secret mqtt_user
+  password: !secret mqtt_pass
+```
+
+I define a sensor to read that particular value.
 
 ```yaml
   - platform: mqtt 
@@ -576,7 +588,7 @@ Only one of the following automations will kick off depending on the time of day
     entity_id: script.good_night
 ```
 
-script.good_morning:
+script.good_morning
 
 ```
 good_morning:
@@ -590,7 +602,7 @@ good_morning:
       entity_id: input_boolean.in_bed
 ```
 
-scene.good_morning:
+scene.good_morning
 
 ```
 - name: Good Morning
@@ -614,7 +626,7 @@ ESP8266, Arduino based devices, and many others can communicate via MQTT
 
 There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LoRaWAN. LoRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and allow querying of these sensors world-wide. Home Assistant could, for example, read from all the LoRaWAN sensors connected to a private hub monitoring a 30 acre farm.
 
-[Graphing with Grafana and InfluxDB](https://community.home-assistant.io/t/complete-guide-on-setting-up-grafana-influxdb-with-home-assistant-using-official-docker-images/42860) - time series analytics
+[Graphing with Grafana and InfluxDB](https://philhawthorne.com/getting-started-with-grafana-influxdb-for-home-assistant/) - display graphs and dashboards of time series data  
 
 And APIs to integrate with everything.
 
