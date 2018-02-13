@@ -447,7 +447,7 @@ Add-ons for updating configurations:
 * ***Samba*** - Manage Home Assistant files exposed over an SMB share
 * ***Git*** - Load and update configuration files for Home Assistant from a Git repository
 * ***SSH*** - Enables easy ssh access for controlling the host
-  * [hass](https://home-assistant.io/docs/tools/hass/) - command line control over Hass.io (reload, start/stop services)
+  * [hass](https://home-assistant.io/docs/tools/hass/) - command line control over Hass.io (reload, start/stop services, check config)
   * [hassctl](https://github.com/dale3h/hassctl) add-on for controlling hassbian
   * Can also control through GUI
 
@@ -613,6 +613,8 @@ ESP8266, Arduino based devices, and many others can communicate via MQTT
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/wemosD1.jpg" width="200">
 
 There exists an [HA component](https://home-assistant.io/components/thethingsnetwork/) for [The Things Network](https://www.thethingsnetwork.org/) to tie in to a global IoT network based on LoRaWAN. LoRaWAN hubs cover an area 5 - 15 km to provide wide-area network coverage for low-bandwidth sensors and allow querying of these sensors world-wide. Home Assistant could, for example, read from all the LoRaWAN sensors connected to a private hub monitoring a 30 acre farm.
+
+[Graphing with Grafana and InfluxDB](https://community.home-assistant.io/t/complete-guide-on-setting-up-grafana-influxdb-with-home-assistant-using-official-docker-images/42860) - time series analytics
 
 And APIs to integrate with everything.
 
