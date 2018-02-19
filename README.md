@@ -69,7 +69,8 @@ Nodes can be up to 30m apart, transmissions can hop nodes up to 4 times (adds de
 Operates on 908MHz band, no interference from 2.4GHz (ISM) devices  
 Has interoperability layer to ensure all Z-Wave hardware and software work together  
 [Z-Wave Plus](https://inovelli.com/z-wave-home-automation/z-wave-plus/) - Fifth gen Z-Wave, improved battery life(~50%), range(167m instead of 100m), bandwidth(250%), OTA firmware updates. Need primary controller to be Z-Wave plus for full benefits  
-In HA, Z-Wave support is provided by python-openzwave
+In HA, Z-Wave support is provided by python-openzwave  
+[Additional hints on optimizing a Z-Wave network](https://drzwave.blog/2017/01/20/seven-habits-of-highly-effective-z-wave-networks-for-consumers/)
 
 #### Zigbee 
 Also a mesh network topology  
@@ -133,7 +134,7 @@ Home Assistant organizes all the components that comprise your home automation n
 
 For each [component](https://home-assistant.io/components/) that you want to use in Home Assistant, you add an entry to your ```configuration.yaml``` file and specify its settings.
 
-The configuration file is written in [YAML](https://home-assistant.io/docs/configuration/yaml/). YAML is a markup language that utilizes block collections of key:value pairs. It is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation.
+The configuration file is written in [YAML](https://home-assistant.io/docs/configuration/yaml/). YAML is a markup language that utilizes block collections of key:value pairs. It is heavily dependant on indentation and if there is an error in your configuration file it is likely due to incorrect indentation. You can check your config with an [online YAML parser](https://yaml-online-parser.appspot.com/).
 
 It is possible to edit YAML files from within Home Assistant using the [HASS Configuration UI](https://home-assistant.io/docs/ecosystem/hass-configurator/)
 
@@ -492,6 +493,10 @@ I define a sensor to read that particular value.
 ```
 And now inside Home Assistant I have a component named `sensor.bedroom_temp` with a value being updated as the MQTT topic gets updated.
 
+***Pro tip:*** Home Assistant just pulls data from the MQTT topics you tell it to. If the information HA is disaplying seems incorrect or inconsistent it could be that the data being sent to Mosquitto is incorrect and not that it's an issue with HA. To troubleshoot these issues it can be beneficial to see the data being fed into Mosquitto from your sensors in real-time. To accomplish this I use the ```mosquitto_sub``` command with verbose output to subscribe to the ```#``` (all) topic. Omit ```--cafile``` if not using certificates.
+
+```mosquitto_sub -t "#" -v --cafile /etc/mosquitto/certs/ca.crt -p 8883 -u <user> -P <password>```
+
 ### [TOR](https://home-assistant.io/docs/ecosystem/tor/)
 The ability to access your frontend through an onion address on the TOR network. With this enabled, you do not need to open your firewall ports or setup HTTPS to enable secure remote access.
 
@@ -819,7 +824,7 @@ Node Red is a visual workflow development tool, allowing the creation of complex
 [Part 3](http://diyfuturism.com/index.php/2018/01/18/going-further-with-home-automations-in-node-red/)  
 
 ## Recommendations for starting out
-Hass.io running on a Raspberry Pi 3 - $50 with power and case.  
+Hass.io running on a [Raspberry Pi 3](https://www.amazon.com/gp/product/B01C6EQNNK/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01C6EQNNK&linkCode=as2&tag=solo07e-20&linkId=0305fc19669ba6f80b8813bdde12c5df) - $50 with power and case.  
 
 Many people start with automating lights. Many lights are either wifi controlled or come with their own hub with a proprietary zigbee radio inside. You also should decide if you want white-only bulbs or color. I've found I prefer white bulbs that can display a range of white from cool to warm. I find the white color projected from color bulbs to be unpleasant. Color LED strips work well for adding a splash of color and effects.
 
@@ -827,9 +832,9 @@ Many people start with automating lights. Many lights are either wifi controlled
 
 [IKEA Tradfri](http://www.ikea.com/us/en/catalog/categories/departments/lighting/36815/) gateway kit with hub and two white bulbs - $80
 
-[Hue](https://www.store.meethue.com/) starter kit with hub and two white bulbs - $70  
+[Hue](https://www.amazon.com/gp/product/B07353SKDD/ref=as_li_qf_asin_il_tl?ie=UTF8&tag=solo07e-20&creative=9325&linkCode=as2&creativeASIN=B07353SKDD&linkId=771af38f2eedf74f476064f5b5090963) starter kit with hub and four white bulbs - $140   
 
-[Osram Lightify](https://www.osram.com/cb/lightify/index.jsp) - Hub $30, White bulb $12  
+Osram Lightify - [Hub](https://www.amazon.com/gp/product/B00R1PB2T0/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00R1PB2T0&linkCode=as2&tag=solo07e-20&linkId=988d7444b9635be6c56440b7780a9ed9) $30, [White bulb](https://www.amazon.com/gp/product/B00R3ID2BG/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00R3ID2BG&linkCode=as2&tag=solo07e-20&linkId=06e21b6fe1d65bf7fec7633c6799629c) $19  
 
 Adding door/window sensors, motion detectors, fire alarms, water leak detectors, etc. requires investment in either Zigbee or Z-Wave.
 
@@ -838,7 +843,7 @@ A cheap, popular, Zigbee based starter kit is the [Xiaomi Security Kit](https://
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/xiaomi.jpg" width="200">
 
 
-[Sonoff switches](https://www.itead.cc/sonoff-wifi-wireless-switch.html)  ($5) are a good option for automating power on/off. You can splice one to the cable of any lamp or to any extension cord to make it controllable. They are available in either Wi-Fi or RF versions.
+[Sonoff switches](https://www.itead.cc/sonoff-wifi-wireless-switch.html)  ($5 - $10) are a good option for automating power on/off. You can splice one to the cable of any lamp or to any extension cord to make it controllable. They are available in either Wi-Fi or RF versions. [Amazon link](https://www.amazon.com/gp/product/B074N22WFT/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B074N22WFT&linkCode=as2&tag=solo07e-20&linkId=1dca0516faaca5d6e46eb26ea7e87597)
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/sonoff.jpg" width="200">
 
@@ -847,7 +852,7 @@ These firmware provide OTA updates and MQTT support.
 
 There is a large ecosystem of Z-Wave enabled devices and sensors, and some sensors may only be available in Z-Wave versions. To proceed with Z-Wave you need a Z-Wave hub and the Aeotec Z-Stick (Z-Wave plus version) is a popular option for the Raspberry Pi.
   
-[Aeotec Z-Stick Gen5](https://www.amazon.com/Aeotec-Z-Stick-Z-Wave-create-gateway/dp/B00X0AWA6E/) - $45  
+[Aeotec Z-Stick Gen5](https://www.amazon.com/gp/product/B00X0AWA6E/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00X0AWA6E&linkCode=as2&tag=solo07e-20&linkId=53feaaf88db404e3044607f1ff6e611a) - $45  
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/aeotec.jpg" height="200">
 
 <br>
