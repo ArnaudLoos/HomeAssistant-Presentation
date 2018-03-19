@@ -19,7 +19,7 @@
 #### HA Advantages:
 
 * Speed of development - updates generally released bi-weekly
-* Number of integrations approaching 1,000
+* Over 1,000 integrations
 * Runs on Raspberry Pi, Synology NAS, or any computer running python
 * Not dependent on cloud services (many components), all data stored locally in sqllite DB
 * Ability to use disparate hardware
