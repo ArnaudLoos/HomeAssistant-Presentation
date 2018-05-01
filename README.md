@@ -122,7 +122,7 @@ $ pip3 install --upgrade homeassistant
 
 
 ### [Hass.io](https://home-assistant.io/hassio/)
-HomeAssistant running in a Docker container on ResinOS  
+HomeAssistant running in a Docker container on ResinOS (soon to be replaced by a custom [buildroot OS](https://buildroot.org/) )  
 
 <img src="https://github.com/ArnaudLoos/HomeAssistant-Presentation/raw/master/images/HA_update.png" width="500">
 
