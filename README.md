@@ -59,6 +59,7 @@ implications.
 * Google Home
 * OpenSource: OpenHAB, Domoticz
 
+
 ## Home Automation Protocols
 
 #### [Z-Wave](https://home-assistant.io/docs/z-wave/installation/)
@@ -642,6 +643,15 @@ And APIs to integrate with everything.
 * [REST API](https://home-assistant.io/developers/rest_api/)
 * [Python REST API](https://home-assistant.io/developers/python_api/)
 
+#### Additional examples from the community
+
+>I replaced a mechanical controller on my whole house wood burner with an Arduino using a thermocouple to read the temperatures in the plenum.  
+Community member ericleejoe
+
+<br>
+
+>I have an electric water heater, so I control the time when it’s on/off optimizing the cost based on my habits (including different pricing for the electricity during the day).  
+Community member ardeus  
 
 ## Advanced Config
 ***[Templating](https://home-assistant.io/docs/configuration/templating/)*** 
